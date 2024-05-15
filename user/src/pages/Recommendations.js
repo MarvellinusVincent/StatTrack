@@ -8,6 +8,7 @@ import { RecommendedTrackItem } from '../components';
 import styled from 'styled-components';
 
 import { Media, MainStyle, RealMain, Theme } from '../styles';
+import { useParams } from 'react-router-dom';
 
 const { colors, fontSizes } = Theme;
 
@@ -84,8 +85,8 @@ const TotalTracks = styled.p`
   color: ${colors.lightGrey};
 `;
 
-const Recommendations = props => {
-  const { playlistId } = props;
+const Recommendations = () => {
+  const { playlistId } = useParams();
 
   const [playlist, setPlaylist] = useState(null);
   const [recommendations, setRecommmendations] = useState(null);

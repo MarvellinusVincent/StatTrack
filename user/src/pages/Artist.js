@@ -7,6 +7,8 @@ import { getArtist } from '../utils/spotify';
 import { Loader } from '../components';
 import styled from 'styled-components';
 
+import { useParams } from 'react-router-dom';
+
 import { Theme, Mixins, Media, MainStyle } from '../styles';
 
 const { colors, fontSizes, spacing } = Theme;
@@ -84,7 +86,7 @@ const NumLabel = styled.p`
 `;
 
 const Artist = props => {
-  const { artistId } = props;
+  const { artistId } = useParams();
   const [artistData, setArtistData] = useState(null);
 
   useEffect(() => {

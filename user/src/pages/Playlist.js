@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -166,7 +166,7 @@ const PlaylistHeaderRight = styled.div`
 `;
 
 const Playlist = props => {
-  const { playlistId } = props;
+  const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [sortValue, setSortValue] = useState('');
   const [tracksData, setTracksData] = useState(null);

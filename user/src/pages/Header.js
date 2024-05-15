@@ -187,10 +187,10 @@ const Header = () => {
                 )}
                 {totalPlaylists && (
                     <Stat>
-                    <Link to="playlists">
-                        <Number>{totalPlaylists}</Number>
-                        <NumLabel>Playlists</NumLabel>
-                    </Link>
+                        <Link to="/playlists">
+                            <Number>{totalPlaylists}</Number>
+                            <NumLabel>Playlists</NumLabel>
+                        </Link>
                     </Stat>
                 )}
                 </Stats>

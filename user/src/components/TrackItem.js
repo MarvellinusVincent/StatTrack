@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { formatDuration } from '../utils';
 
 import styled from 'styled-components';
@@ -83,8 +83,9 @@ const TrackDuration = styled.span`
   font-size: ${fontSizes.sm};
 `;
 
-const TrackItem = ({ track }) => (
-  <li>
+const TrackItem = ({ track }) => {
+  return (
+    <li>
     <TrackContainer to={`/track/${track.id}`}>
       <div>
         <TrackPicture>
@@ -112,7 +113,8 @@ const TrackItem = ({ track }) => (
       </TrackMiniContainer>
     </TrackContainer>
   </li>
-);
+  )
+};
 
 TrackItem.propTypes = {
   track: PropTypes.object.isRequired,

@@ -92,60 +92,79 @@ const headers = {
 
 axios.defaults.headers.common = headers;
 
-export const getCurrentUserProfile = () => axios.get('/me');
+export const getCurrentUserProfile = () => {
+  return axios.get('/me');
+};
 
 export const getCurrentUserPlaylists = (limit = 50) => {
+  console.log('getCurrentUserPlaylists parameters:', limit); // Log the parameters
   return axios.get(`/me/playlists?limit=${limit}`);
 };
 
 export const getTopArtists = (time_range = 'long_term') => {
+  console.log('getTopArtists parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopArtistsShort = (time_range = 'short_term') => {
+  console.log('getTopArtistsShort parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopArtistsMedium = (time_range = 'medium_term') => {
+  console.log('getTopArtistsMedium parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongs = (time_range = 'long_term') => {
+  console.log('getTopSongs parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongsShort = (time_range = 'short_term') => {
+  console.log('getTopSongsShort parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongsMedium = (time_range = 'medium_term') => {
+  console.log('getTopSongsMedium parameters:', time_range); // Log the parameters
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
-export const getFollowing = () =>
-  axios.get('/me/following?type=artist');
+export const getFollowing = () => {
+  return axios.get('/me/following?type=artist');
+};
 
-export const getRecentlyPlayed = () =>
-  axios.get('/me/player/recently-played?limit=50');
+export const getRecentlyPlayed = () => {
+  return axios.get('/me/player/recently-played?limit=50');
+};
 
-export const getPlaylists = () =>
-  axios.get('/me/playlists?limit=50');
+export const getPlaylists = () => {
+  return axios.get('/me/playlists?limit=50');
+};
 
-export const getArtist = artistId =>
-  axios.get(`/artists/${artistId}`);
+export const getArtist = artistId => {
+  console.log('getArtist parameters:', artistId); // Log the parameters
+  return axios.get(`/artists/${artistId}`);
+};
 
-export const getPlaylist = playlistId =>
-  axios.get(`/playlists/${playlistId}`);
+export const getPlaylist = playlistId => {
+  console.log('getPlaylist parameters:', playlistId); // Log the parameters
+  return axios.get(`/playlists/${playlistId}`);
+};
 
-export const getMultipleTrackAudioFeatures = ids =>
-  axios.get(`/audio-features?ids=${ids}`);
+export const getMultipleTrackAudioFeatures = ids => {
+  console.log('getMultipleTrackAudioFeatures parameters:', ids); // Log the parameters
+  return axios.get(`/audio-features?ids=${ids}`);
+};
 
-export const getTrackAudioFeatures = trackId =>
-  axios.get(`/audio-features/${trackId}`);
-
-const getTrackIds = tracks => tracks.map(({ track }) => track.id).join(',');
+export const getTrackAudioFeatures = trackId => {
+  console.log('getTrackAudioFeatures parameters:', trackId); // Log the parameters
+  return axios.get(`/audio-features/${trackId}`);
+};
 
 export const getRecommendationsForTracks = tracks => {
+  console.log('getRecommendationsForTracks parameters:', tracks); // Log the parameters
   const shuffledTracks = tracks.sort(() => 0.5 - Math.random());
   const seed_tracks = getTrackIds(shuffledTracks.slice(0, 5));
   const seed_artists = '';
@@ -154,20 +173,28 @@ export const getRecommendationsForTracks = tracks => {
 };
 
 export const addTrackToPlaylist = (playlistId, uris) => {
+  console.log('addTrackToPlaylist parameters:', playlistId, uris); // Log the parameters
   const data = {
     position: 0
   };
   axios.post(`/playlists/${playlistId}/tracks?uris=spotify:track:${uris}`, data);
 };
 
-export const getTrack = trackId =>
-  axios.get(`/tracks/${trackId}`);
+export const getTrack = trackId => {
+  console.log('getTrack parameters:', trackId); // Log the parameters
+  return axios.get(`/tracks/${trackId}`);
+};
 
-export const getTrackAudioAnalysis = trackId =>
-  axios.get(`/audio-analysis/${trackId}`);
+const getTrackIds = tracks => tracks.map(({ track }) => track.id).join(',');
 
-export const getTrackInfo = trackId =>
-  axios
+export const getTrackAudioAnalysis = trackId => {
+  console.log('getTrackAudioAnalysis parameters:', trackId); // Log the parameters
+  return axios.get(`/audio-analysis/${trackId}`);
+};
+
+export const getTrackInfo = trackId => {
+  console.log('getTrackInfo parameters:', trackId); // Log the parameters
+  return axios
     .all([getTrack(trackId), getTrackAudioAnalysis(trackId), getTrackAudioFeatures(trackId)])
     .then(
       axios.spread((track, audioAnalysis, audioFeatures) => ({
@@ -176,8 +203,10 @@ export const getTrackInfo = trackId =>
         audioFeatures: audioFeatures.data,
       })),
     );
+};
 
 export const playTrack = trackId => {
+  console.log('playTrack parameters:', trackId); // Log the parameters
   const data = {
     "uris": [
       `spotify:track:${trackId}`
@@ -193,6 +222,7 @@ export const pauseTrack = () => {
 };
 
 export const removeTrackFromPlaylist = (playlistId, uris) => {
+  console.log('removeTrackFromPlaylist parameters:', playlistId, uris); // Log the parameters
   const trackUris = Array.isArray(uris) ? uris : [uris];
 
   const data = {

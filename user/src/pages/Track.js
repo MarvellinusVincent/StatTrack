@@ -10,6 +10,8 @@ import { Loader } from '../components';
 
 import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
 
+import { useParams } from 'react-router-dom';
+
 const { colors, fontSizes, spacing } = Theme;
 
 const TrackContainer = styled.div`
@@ -146,12 +148,14 @@ const FeatureLabel = styled.p`
   margin-bottom: 0;
 `;
 
-const Track = ({ trackId }) => {
+const Track = () => {
+  const { trackId } = useParams();
   const [track, setTrack] = useState(null);
   const [audioAnalysis, setAudioAnalysis] = useState(null);
   const [audioFeatures, setAudioFeatures] = useState(null);
 
   useEffect(() => {
+    console.log('Track ID in trakcitem.js before sending:', trackId);
     const fetchData = async () => {
       try {
         const data = await getTrackInfo(trackId);
@@ -259,7 +263,7 @@ const Track = ({ trackId }) => {
 };
 
 Track.propTypes = {
-  trackId: PropTypes.string.isRequired,
+  trackId: PropTypes.string,
 };
 
 export default Track;

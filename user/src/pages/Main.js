@@ -1,5 +1,4 @@
 import React from 'react';
-import { Router } from '@reach/router';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Nav } from '../components';
 import Profile from './Profile';
@@ -11,11 +10,10 @@ import Recommendations from './Recommendations';
 import Track from './Track';
 import Artist from './Artist';
 import AllPlaylists from './AllPlaylists';
+import ScrollToTop from './ScrollToTop';
 
 import styled from 'styled-components';
 import { Theme, Media } from '../styles';
-import Home from '../Home';
-import Dash from '../Dash';
 
 const MainDiv = styled.div`
   padding-left: ${Theme.navWidth};
@@ -28,21 +26,22 @@ const MainDiv = styled.div`
 const Main = () => (
   <MainDiv>
     <BrowserRouter>
-      <Nav />
-      <Routes>
-        <Route path="/">
-          <Route index element={<Profile />} />
-          <Route path="dash" element={<Dash />} />
-          <Route path="artists" element={<TopArtists />} />
-          <Route path="tracks" element={<TopTracks />} />
-          <Route path="recent" element={<RecentlyPlayed />} />
-          <Route path="playlists/:playlistId" element={<Playlist />} />
-          <Route path="playlists" element={<AllPlaylists />} />
-          <Route path="artist/:artistId" element={<Artist />} />
-          <Route path="track/:trackId" element={<Track />} />
-          <Route path="recommendations/:playlistId" element={<Recommendations />} />
-        </Route>
-      </Routes>
+      <ScrollToTop>
+        <Nav />
+        <Routes>
+          <Route path="/">
+            <Route index element={<Profile />} />
+            <Route path="playlists/:playlistId" element={<Playlist />} />
+            <Route path="playlists" element={<AllPlaylists />} />
+            <Route path="artists" element={<TopArtists />} />
+            <Route path="tracks" element={<TopTracks />} />
+            <Route path="recent" element={<RecentlyPlayed />} />
+            <Route path="artist/:artistId" element={<Artist />} />
+            <Route path="track/:trackId" element={<Track />} />
+            <Route path="recommendations/:playlistId" element={<Recommendations />} />
+          </Route>
+        </Routes>
+      </ScrollToTop>
     </BrowserRouter>
   </MainDiv>
 );
