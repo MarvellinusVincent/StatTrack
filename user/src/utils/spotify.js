@@ -2,53 +2,84 @@ import axios from 'axios';
 import { getParams } from '.';
 
 const EXPIRED_TIME = 3600;
-
-const setTokenTimestamp = () => window.localStorage.setItem('spotify_token_timestamp', Date.now());
-const setAccessToken = token => {
-  setTokenTimestamp();
-  window.localStorage.setItem('spotify_access_token', token);
+const LOCALSTORAGE_KEYS = {
+  accessToken: 'spotify_access_token',
+  refreshToken: 'spotify_refresh_token',
+  expireTime: 'spotify_token_expire_time',
+  timestamp: 'spotify_token_timestamp',
+}
+const LOCALSTORAGE_VALUES = {
+  accessToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.accessToken),
+  refreshToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken),
+  expireTime: window.localStorage.getItem(LOCALSTORAGE_KEYS.expireTime),
+  timestamp: window.localStorage.getItem(LOCALSTORAGE_KEYS.timestamp),
 };
-const setRefreshToken = token => window.localStorage.setItem('spotify_refresh_token', token);
-const getTokenTimestamp = () => window.localStorage.getItem('spotify_token_timestamp');
-const getStoredAccessToken = () => window.localStorage.getItem('spotify_access_token');
-const getStoredRefreshToken = () => window.localStorage.getItem('spotify_refresh_token');
+
+const getAccessToken = () => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const queryParams = {
+    [LOCALSTORAGE_KEYS.accessToken]: urlParams.get('access_token'),
+    [LOCALSTORAGE_KEYS.refreshToken]: urlParams.get('refresh_token'),
+    [LOCALSTORAGE_KEYS.expireTime]: urlParams.get('expires_in'),
+  };
+  const hasError = urlParams.get('error');
+
+  if (hasError || hasTokenExpired() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
+    refreshToken();
+  }
+
+  if (LOCALSTORAGE_VALUES.accessToken && LOCALSTORAGE_VALUES.accessToken !== 'undefined') {
+    return LOCALSTORAGE_VALUES.accessToken;
+  }
+
+  if (queryParams[LOCALSTORAGE_KEYS.accessToken]) {
+
+    for (const property in queryParams) {
+      window.localStorage.setItem(property, queryParams[property]);
+    }
+
+    window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+
+    return queryParams[LOCALSTORAGE_KEYS.accessToken];
+  }
+
+  return false;
+};
 
 const refreshToken = async () => {
   try {
-    const { data } = await axios.get(`/refresh_token?refresh_token=${getStoredRefreshToken()}`);
-    const { access_token } = data;
-    setAccessToken(access_token);
+
+    if (!LOCALSTORAGE_VALUES.refreshToken ||
+      LOCALSTORAGE_VALUES.refreshToken === 'undefined' ||
+      (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp) / 1000) < 1000
+    ) {
+      console.error('No refresh token available');
+      logout();
+    }
+
+
+    const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
+
+
+    window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
+    window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+
+
     window.location.reload();
-    return;
+
   } catch (e) {
     console.error(e);
   }
 };
 
-const getAccessToken = () => {
-  console.log("Getting access token...");
-  const { error, access_token, refresh_token } = getParams();
-  if (error) {
-    console.log("First if")
-    refreshToken();
+const hasTokenExpired = () => {
+  const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
+  if (!accessToken || !timestamp) {
+    return false;
   }
-
-  if (Date.now() - getTokenTimestamp() > EXPIRED_TIME) {
-    console.warn('Access token has expired, refreshing...');
-    console.log("Second if")
-    refreshToken();
-  }
-
-  const localAccessToken = getStoredAccessToken();
-
-  if ((!localAccessToken || localAccessToken === 'undefined') && access_token) {
-    console.log("Third if");
-    setAccessToken(access_token);
-    setRefreshToken(refresh_token);
-    return access_token;
-  }
-
-  return localAccessToken;
+  const millisecondsElapsed = Date.now() - Number(timestamp);
+  return (millisecondsElapsed / 1000) > Number(expireTime);
 };
 
 export const token = getAccessToken();
@@ -162,7 +193,6 @@ export const pauseTrack = () => {
 };
 
 export const removeTrackFromPlaylist = (playlistId, uris) => {
-  // Ensure uris is always an array
   const trackUris = Array.isArray(uris) ? uris : [uris];
 
   const data = {
@@ -177,8 +207,8 @@ export const removeTrackFromPlaylist = (playlistId, uris) => {
 };
 
 export const logout = () => {
-  window.localStorage.removeItem('spotify_token_timestamp');
-  window.localStorage.removeItem('spotify_access_token');
-  window.localStorage.removeItem('spotify_refresh_token');
-  window.location.reload();
+  for (const property in LOCALSTORAGE_KEYS) {
+    window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
+  }
+  window.location = window.location.origin;
 };

@@ -16,6 +16,7 @@ const App = () => {
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
     setAccessToken(token);
+    console.log("access token", accessToken)
   }, []);
   return (
     <AppContainer>
