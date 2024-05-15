@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from '@reach/router';
-
-import { catchErrors } from '../utils';
-import { getCurrentUserProfile, getTopArtists, getTopSongs } from '../utils/spotify';
-
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
-
+import { catchErrors } from '../utils';
+import { getCurrentUserProfile, getTopArtists, getTopSongs } from '../utils/spotify';
 import { Loader, TrackItem } from '../components';
-
 import Header from './Header';
 
 const { colors, fontSizes, spacing } = Theme;
@@ -50,7 +46,7 @@ const TrackListContent = styled.div`
   padding-left: 30px;
   padding-right: 30px;
   padding-bottom: 20px;
-  border-radius:3%;
+  border-radius: 3%;
 `;
 
 const MoreButton = styled(Link)`
@@ -104,7 +100,7 @@ const ArtistDetailContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding-bottom: 8px;
-`
+`;
 
 const ArtistArtwork = styled(Link)`
   display: inline-block;
@@ -157,7 +153,7 @@ const TopArtistContainer = styled(Link)`
   position: relative;
   margin-right: -2.5rem;
   margin-left: -2.5rem;
-  
+
   &:hover,
   &:focus {
     &:nth-child(1) {
@@ -185,7 +181,7 @@ const TopArtistContainer = styled(Link)`
 
 const TopTrackContainer = styled(Link)`
   display: inline-block;
-  width: 13rem; 
+  width: 13rem;
   height: 13rem;
   background-image: url(${props => props.imageurl});
   background-size: cover;
@@ -193,7 +189,7 @@ const TopTrackContainer = styled(Link)`
   box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5);
   transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
   z-index: 1;
-  position:relative;
+  position: relative;
   margin-right: -2.5rem;
   margin-left: -2.5rem;
 
@@ -230,6 +226,7 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [topArtists, setTopArtists] = useState(null);
   const [topTracks, setTopTracks] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -263,41 +260,36 @@ const Profile = () => {
                 </TracklistHeading>
                 <TrackListContent>
                   {topArtists ? (
-                      <TopContainer>
+                    <TopContainer>
+                      {topArtists.items.slice(0, 3).map((artist, i) => (
                         <TopArtistContainer
-                          to={`/artist/${topArtists.items[1].id}`}
-                          imageurl={topArtists.items[1].images.length ? topArtists.items[1].images[0].url : ''}
+                          key={i}
+                          to={`/artist/${artist.id}`}
+                          imageurl={artist.images.length ? artist.images[0].url : ''}
                         />
-                        <TopArtistContainer
-                          to={`/artist/${topArtists.items[0].id}`}
-                          imageurl={topArtists.items[0].images.length ? topArtists.items[0].images[0].url : ''}
-                        />
-                        <TopArtistContainer
-                          to={`/artist/${topArtists.items[2].id}`}
-                          imageurl={topArtists.items[2].images.length ? topArtists.items[2].images[0].url : ''}
-                        />
-                      </TopContainer>
-                    ) : (
-                      <Loader />
-                    )}
-                    {topArtists ? (
-                      <ul>
-                        {topArtists.items.slice(0, 10).map((artist, i) => (
-                            <ArtistDetailContainer>
-                              <Artist key={i}>
-                                <ArtistArtwork to={`/artist/${artist.id}`}>
-                                  {artist.images.length && <img src={artist.images[2].url} alt="Artist" />}
-                                </ArtistArtwork>
-                                <ArtistName to={`/artist/${artist.id}`}>
-                                  <span>{artist.name}</span>
-                                </ArtistName>
-                              </Artist>
-                            </ArtistDetailContainer>
-                        ))}
-                      </ul>
-                    ) : (
-                      <Loader />
-                    )}
+                      ))}
+                    </TopContainer>
+                  ) : (
+                    <Loader />
+                  )}
+                  {topArtists ? (
+                    <ul>
+                      {topArtists.items.slice(0, 10).map((artist, i) => (
+                        <ArtistDetailContainer key={i}>
+                          <Artist>
+                            <ArtistArtwork to={`/artist/${artist.id}`}>
+                              {artist.images.length && <img src={artist.images[2].url} alt="Artist" />}
+                            </ArtistArtwork>
+                            <ArtistName to={`/artist/${artist.id}`}>
+                              <span>{artist.name}</span>
+                            </ArtistName>
+                          </Artist>
+                        </ArtistDetailContainer>
+                      ))}
+                    </ul>
+                  ) : (
+                    <Loader />
+                  )}
                 </TrackListContent>
               </Tracklist>
 
@@ -307,30 +299,21 @@ const Profile = () => {
                   <MoreButton to="/tracks">See More</MoreButton>
                 </TracklistHeading>
                 <TrackListContent>
-                {topTracks ? (
-                  <TopContainer>
-                    <TopTrackContainer
-                      to={`/track/${topTracks.items[0].id}`}
-                      imageurl={topTracks.items[1].album.images.length ? topTracks.items[1].album.images[0].url : ''}
-                    >
-                      <img src={topTracks.items[1].album.images.length ? topTracks.items[1].album.images[0].url : ''} alt="Track" />
-                    </TopTrackContainer>
-                    <TopTrackContainer
-                      to={`/track/${topTracks.items[1].id}`}
-                      imageurl={topTracks.items[0].album.images.length ? topTracks.items[0].album.images[0].url : ''}
-                    >
-                      <img src={topTracks.items[0].album.images.length ? topTracks.items[0].album.images[0].url : ''} alt="Track" />
-                    </TopTrackContainer>
-                    <TopTrackContainer
-                      to={`/track/${topTracks.items[2].id}`}
-                      imageurl={topTracks.items[2].album.images.length ? topTracks.items[2].album.images[0].url : ''}
-                    >
-                      <img src={topTracks.items[2].album.images.length ? topTracks.items[2].album.images[0].url : ''} alt="Track" />
-                    </TopTrackContainer>
-                  </TopContainer>
-                ) : (
-                  <Loader /> 
-                )}
+                  {topTracks ? (
+                    <TopContainer>
+                      {topTracks.items.slice(0, 3).map((track, i) => (
+                        <TopTrackContainer
+                          key={i}
+                          to={`/track/${track.id}`}
+                          imageurl={track.album.images.length ? track.album.images[0].url : ''}
+                        >
+                          <img src={track.album.images.length ? track.album.images[0].url : ''} alt="Track" />
+                        </TopTrackContainer>
+                      ))}
+                    </TopContainer>
+                  ) : (
+                    <Loader />
+                  )}
                   {topTracks ? (
                     <ul>
                       {topTracks.items.slice(0, 10).map((track, i) => (

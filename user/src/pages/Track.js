@@ -259,7 +259,7 @@ const Track = ({ trackId }) => {
 };
 
 Track.propTypes = {
-  trackId: PropTypes.string,
+  trackId: PropTypes.string.isRequired,
 };
 
 export default Track;

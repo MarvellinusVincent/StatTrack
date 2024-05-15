@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { formatDuration } from '../utils';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
 import { PlusIcon, PlayIcon, PauseIcon } from '../assets';

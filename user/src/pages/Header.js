@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
 
 import { catchErrors } from '../utils';
 import { getCurrentUserProfile, getCurrentUserPlaylists, getFollowing, logout } from '../utils/spotify';
