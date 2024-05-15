@@ -1,8 +1,8 @@
 require('dotenv').config()
+
 const express = require('express');
 const query_string = require('querystring');
 const axios = require('axios');
-const exp = require('constants');
 const path = require('path');
 
 const app = express();
@@ -12,7 +12,10 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const FRONTEND_URI = process.env.FRONTEND_URI;
 const PORT = process.env.PORT || 8888;
+
 const state_key = 'spotify_auth_state';
+
+app.use(express.static(path.resolve(__dirname, './user/build')));
 
 const generateRandomString = length => {
     let text = '';
@@ -22,8 +25,6 @@ const generateRandomString = length => {
     }
     return text;
 }
-
-app.use(express.static(path.resolve(__dirname, './user/build')));
 
 app.get('/login', (req, res) => {
     var state = generateRandomString(16);

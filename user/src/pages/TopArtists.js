@@ -56,8 +56,8 @@ const ArtistsContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-gap: 20px;
   margin-top: 30px;
-  justify-items: center; /* Center items horizontally */
-  align-items: center; /* Center items vertically */
+  justify-items: center;
+  align-items: center;
   ${Media.tablet`
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   `}

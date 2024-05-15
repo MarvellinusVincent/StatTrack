@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { formatDuration } from '../utils';
+import { formatTime } from '../utils';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
@@ -109,7 +109,7 @@ const TrackName = styled.span`
   &:hover,
   &:focus {
     border-bottom: 1px solid ${colors.white};
-    text-decoration: none; /* Prevent default link underline */
+    text-decoration: none;
   }
 `;
 
@@ -188,7 +188,7 @@ const RecommendedTrackItem = ({ track, onAddToPlaylist }) => {
                 onClick={() => onAddToPlaylist(track.id)}
               />
             </a>
-            {track.duration_ms && <TrackDuration>{formatDuration(track.duration_ms)}</TrackDuration>}
+            {track.duration_ms && <TrackDuration>{formatTime(track.duration_ms)}</TrackDuration>}
           </TrackRight>
         </TrackMiniContainer>
       </TrackContainer>

@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 import theme from './Theme';
 const { colors, fontSizes, fonts } = theme;
 
-const GlobalStyle = createGlobalStyle`
+const AllPageStyle = createGlobalStyle`
 
   html {
     box-sizing: border-box;
@@ -110,4 +110,4 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default GlobalStyle;
+export default AllPageStyle;

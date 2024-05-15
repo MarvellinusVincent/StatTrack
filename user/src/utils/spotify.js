@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { getParams } from '.';
 
-const EXPIRED_TIME = 3600;
 const LOCALSTORAGE_KEYS = {
   accessToken: 'spotify_access_token',
   refreshToken: 'spotify_refresh_token',
   expireTime: 'spotify_token_expire_time',
   timestamp: 'spotify_token_timestamp',
 }
+
 const LOCALSTORAGE_VALUES = {
   accessToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.accessToken),
   refreshToken: window.localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken),
@@ -25,7 +24,7 @@ const getAccessToken = () => {
   };
   const hasError = urlParams.get('error');
 
-  if (hasError || hasTokenExpired() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
+  if (hasError || expiredToken() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
     refreshToken();
   }
 
@@ -73,7 +72,7 @@ const refreshToken = async () => {
   }
 };
 
-const hasTokenExpired = () => {
+const expiredToken = () => {
   const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
   if (!accessToken || !timestamp) {
     return false;
@@ -81,8 +80,6 @@ const hasTokenExpired = () => {
   const millisecondsElapsed = Date.now() - Number(timestamp);
   return (millisecondsElapsed / 1000) > Number(expireTime);
 };
-
-export const token = getAccessToken();
 
 axios.defaults.baseURL = 'https://api.spotify.com/v1';
 const headers = {
@@ -97,37 +94,37 @@ export const getCurrentUserProfile = () => {
 };
 
 export const getCurrentUserPlaylists = (limit = 50) => {
-  console.log('getCurrentUserPlaylists parameters:', limit); // Log the parameters
+  console.log('getCurrentUserPlaylists parameters:', limit);
   return axios.get(`/me/playlists?limit=${limit}`);
 };
 
 export const getTopArtists = (time_range = 'long_term') => {
-  console.log('getTopArtists parameters:', time_range); // Log the parameters
+  console.log('getTopArtists parameters:', time_range);
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopArtistsShort = (time_range = 'short_term') => {
-  console.log('getTopArtistsShort parameters:', time_range); // Log the parameters
+  console.log('getTopArtistsShort parameters:', time_range);
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopArtistsMedium = (time_range = 'medium_term') => {
-  console.log('getTopArtistsMedium parameters:', time_range); // Log the parameters
+  console.log('getTopArtistsMedium parameters:', time_range);
   return axios.get(`/me/top/artists?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongs = (time_range = 'long_term') => {
-  console.log('getTopSongs parameters:', time_range); // Log the parameters
+  console.log('getTopSongs parameters:', time_range);
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongsShort = (time_range = 'short_term') => {
-  console.log('getTopSongsShort parameters:', time_range); // Log the parameters
+  console.log('getTopSongsShort parameters:', time_range);
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
 export const getTopSongsMedium = (time_range = 'medium_term') => {
-  console.log('getTopSongsMedium parameters:', time_range); // Log the parameters
+  console.log('getTopSongsMedium parameters:', time_range);
   return axios.get(`/me/top/tracks?time_range=${time_range}&limit=50`);
 };
 
@@ -144,27 +141,27 @@ export const getPlaylists = () => {
 };
 
 export const getArtist = artistId => {
-  console.log('getArtist parameters:', artistId); // Log the parameters
+  console.log('getArtist parameters:', artistId);
   return axios.get(`/artists/${artistId}`);
 };
 
 export const getPlaylist = playlistId => {
-  console.log('getPlaylist parameters:', playlistId); // Log the parameters
+  console.log('getPlaylist parameters:', playlistId);
   return axios.get(`/playlists/${playlistId}`);
 };
 
 export const getMultipleTrackAudioFeatures = ids => {
-  console.log('getMultipleTrackAudioFeatures parameters:', ids); // Log the parameters
+  console.log('getMultipleTrackAudioFeatures parameters:', ids);
   return axios.get(`/audio-features?ids=${ids}`);
 };
 
 export const getTrackAudioFeatures = trackId => {
-  console.log('getTrackAudioFeatures parameters:', trackId); // Log the parameters
+  console.log('getTrackAudioFeatures parameters:', trackId);
   return axios.get(`/audio-features/${trackId}`);
 };
 
 export const getRecommendationsForTracks = tracks => {
-  console.log('getRecommendationsForTracks parameters:', tracks); // Log the parameters
+  console.log('getRecommendationsForTracks parameters:', tracks);
   const shuffledTracks = tracks.sort(() => 0.5 - Math.random());
   const seed_tracks = getTrackIds(shuffledTracks.slice(0, 5));
   const seed_artists = '';
@@ -173,7 +170,7 @@ export const getRecommendationsForTracks = tracks => {
 };
 
 export const addTrackToPlaylist = (playlistId, uris) => {
-  console.log('addTrackToPlaylist parameters:', playlistId, uris); // Log the parameters
+  console.log('addTrackToPlaylist parameters:', playlistId, uris);
   const data = {
     position: 0
   };
@@ -181,19 +178,19 @@ export const addTrackToPlaylist = (playlistId, uris) => {
 };
 
 export const getTrack = trackId => {
-  console.log('getTrack parameters:', trackId); // Log the parameters
+  console.log('getTrack parameters:', trackId);
   return axios.get(`/tracks/${trackId}`);
 };
 
 const getTrackIds = tracks => tracks.map(({ track }) => track.id).join(',');
 
 export const getTrackAudioAnalysis = trackId => {
-  console.log('getTrackAudioAnalysis parameters:', trackId); // Log the parameters
+  console.log('getTrackAudioAnalysis parameters:', trackId);
   return axios.get(`/audio-analysis/${trackId}`);
 };
 
 export const getTrackInfo = trackId => {
-  console.log('getTrackInfo parameters:', trackId); // Log the parameters
+  console.log('getTrackInfo parameters:', trackId);
   return axios
     .all([getTrack(trackId), getTrackAudioAnalysis(trackId), getTrackAudioFeatures(trackId)])
     .then(
@@ -206,7 +203,7 @@ export const getTrackInfo = trackId => {
 };
 
 export const playTrack = trackId => {
-  console.log('playTrack parameters:', trackId); // Log the parameters
+  console.log('playTrack parameters:', trackId);
   const data = {
     "uris": [
       `spotify:track:${trackId}`
@@ -222,7 +219,7 @@ export const pauseTrack = () => {
 };
 
 export const removeTrackFromPlaylist = (playlistId, uris) => {
-  console.log('removeTrackFromPlaylist parameters:', playlistId, uris); // Log the parameters
+  console.log('removeTrackFromPlaylist parameters:', playlistId, uris);
   const trackUris = Array.isArray(uris) ? uris : [uris];
 
   const data = {
@@ -242,3 +239,5 @@ export const logout = () => {
   }
   window.location = window.location.origin;
 };
+
+export const token = getAccessToken();

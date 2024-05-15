@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { formatWithCommas, catchErrors } from '../utils';
+import { format2, catchErrors } from '../utils';
 import { getArtist } from '../utils/spotify';
 
 import { Loader } from '../components';
@@ -109,7 +109,7 @@ const Artist = props => {
             <ArtistNameLink>{artistData.name}</ArtistNameLink>
             <Stats>
               <div>
-                <Number>{formatWithCommas(artistData.followers.total)}</Number>
+                <Number>{format2(artistData.followers.total)}</Number>
                 <NumLabel>Followers</NumLabel>
               </div>
               {artistData.genres && (

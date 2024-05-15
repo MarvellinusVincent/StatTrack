@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { formatDuration, getYear, parsePitchClass } from '../utils';
+import { ReadableYear } from '../utils';
 import { getTrackInfo } from '../utils/spotify';
 import AudioFeaturesChart from '../components/AudioFeatureChart';
 
@@ -195,7 +195,7 @@ const Track = () => {
               <Album>
                   {track.album.name}
                   {' '}
-                  &middot; {getYear(track.album.release_date)}
+                  &middot; {ReadableYear(track.album.release_date)}
               </Album>
               <PlayTrackButton
                 href={track.external_urls.spotify}

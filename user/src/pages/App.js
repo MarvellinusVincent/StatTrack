@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { GlobalStyle } from '../styles';
+import { AllPageStyle } from '../styles';
 
 import { token } from '../utils/spotify';
 
@@ -21,7 +21,7 @@ const App = () => {
 
   return (
     <AppContainer>
-      <GlobalStyle />
+      <AllPageStyle />
       {!accessToken ?(
         <Login />
       ) : (

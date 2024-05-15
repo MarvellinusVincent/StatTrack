@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, useParams } from 'react-router-dom';
-import { formatDuration } from '../utils';
+import { Link } from 'react-router-dom';
+import { formatTime } from '../utils';
 
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
@@ -108,7 +108,7 @@ const TrackItem = ({ track }) => {
           )}
         </TrackLeft>
         <TrackRight>
-          {track.duration_ms && <TrackDuration>{formatDuration(track.duration_ms)}</TrackDuration>}
+          {track.duration_ms && <TrackDuration>{formatTime(track.duration_ms)}</TrackDuration>}
         </TrackRight>
       </TrackMiniContainer>
     </TrackContainer>

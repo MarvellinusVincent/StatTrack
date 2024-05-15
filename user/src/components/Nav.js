@@ -2,7 +2,7 @@ import React from 'react';
 import { GithubIconLogo, PlaylistIconLogo, RecentIconLogo, SpotifyLogo, TopArtistsLogo, TopTracksLogo, UserAvatar } from '../assets/index'
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
-import { Link, Outlet } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 const { colors } = Theme;
 
 const Container = styled.nav`

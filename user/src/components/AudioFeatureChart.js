@@ -15,10 +15,10 @@ const AudioFeaturesChart = ({ audioFeatures, track }) => {
       const chartData = {
         labels: ['Tempo', 'Loudness', 'Acousticness', 'Danceability', 'Energy', 'Liveness', 'Speechiness', 'Instrumentalness', 'Valence'],
         datasets: [{
-          backgroundColor: '#101010', // Set background color to match #101010
+          backgroundColor: '#101010', 
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
-          hoverBackgroundColor: colors.green, // Use colors.green for hover background color
+          hoverBackgroundColor: colors.green, 
           data: [
             normalizedTempo,
             normalizedLoudness,
@@ -48,7 +48,7 @@ const AudioFeaturesChart = ({ audioFeatures, track }) => {
           },
           plugins: {
             legend: {
-              display: false // Hide legend
+              display: false
             }
           },
           hover: {

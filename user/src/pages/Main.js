@@ -10,7 +10,7 @@ import Recommendations from './Recommendations';
 import Track from './Track';
 import Artist from './Artist';
 import AllPlaylists from './AllPlaylists';
-import ScrollToTop from './ScrollToTop';
+import ScrollToTop from '../components/ScrollToTop';
 
 import styled from 'styled-components';
 import { Theme, Media } from '../styles';
