@@ -233,7 +233,7 @@ const Nav = () => (
     </Menu>
     <Github>
       <a
-        href=""
+        href="https://github.com/MarvellinusVincent/SpotiStats"
         target="_blank"
         rel="noopener noreferrer">
         <img src={GithubIconLogo} alt="GithubIcon" />
