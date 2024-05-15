@@ -51,7 +51,7 @@ const LoginButton = styled.a`
 const LOGIN_URI =
   process.env.NODE_ENV !== 'production'
     ? 'http://localhost:8888/login'
-    : 'https://spotify-profile.herokuapp.com/login';
+    : 'https://statspot.herokuapp.com/login';
 
 
 const Login = () => (
