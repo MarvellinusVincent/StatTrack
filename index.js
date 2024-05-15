@@ -3,13 +3,15 @@ const express = require('express');
 const query_string = require('querystring');
 const axios = require('axios');
 const exp = require('constants');
+const path = require('path');
 
 const app = express();
 
-const CLIENT_ID = process.env.CLIENT_ID
-const CLIENT_SECRET = process.env.CLIENT_SECRET
-const REDIRECT_URI = process.env.REDIRECT_URI
-const PORT = process.env.PORT;
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const FRONTEND_URI = process.env.FRONTEND_URI;
+const PORT = process.env.PORT || 8888;
 const state_key = 'spotify_auth_state';
 
 const generateRandomString = length => {
@@ -20,6 +22,8 @@ const generateRandomString = length => {
     }
     return text;
 }
+
+app.use(express.static(path.resolve(__dirname, './user/build')));
 
 app.get('/login', (req, res) => {
     var state = generateRandomString(16);
@@ -60,7 +64,7 @@ app.get('/callback', (req, res) => {
                 refresh_token,
                 expires_in
             })
-            res.redirect(`http://localhost:3000/?${query_params}`)
+            res.redirect(`${FRONTEND_URI}?${query_params}`)
         } else {
           res.redirect(`/${query_string.stringify({
             error: 'invalid token'
@@ -97,4 +101,8 @@ app.get('/refresh_token', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Port listened on ${PORT}`);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });

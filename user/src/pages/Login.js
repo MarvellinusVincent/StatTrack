@@ -48,12 +48,18 @@ const LoginButton = styled.a`
   }
 `;
 
+const LOGIN_URI =
+  process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:8888/login'
+    : 'https://spotify-profile.herokuapp.com/login';
+
+
 const Login = () => (
   <Container>
     <LogoContainer href="https://open.spotify.com">
       <LogoImage src={spotifyLogo} alt="Spotify Logo"/>
     </LogoContainer>
-    <LoginButton href="http://localhost:8888/login">Log in to Spotify</LoginButton>
+    <LoginButton href={LOGIN_URI}>Log in to Spotify</LoginButton>
   </Container>
 );
 
