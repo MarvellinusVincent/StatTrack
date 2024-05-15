@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router } from '@reach/router';
 
-import { ScrollToTop, Nav } from '../components';
+import { Nav } from '../components';
 import Profile from './Profile';
 import RecentlyPlayed from './RecentlyPlayed';
 import TopArtists from './TopArtists';
@@ -27,7 +27,6 @@ const Main = () => (
   <MainDiv>
     <Nav />
     <Router primary={false}>
-      <ScrollToTop path="/">
         <Profile path="/" />
         <TopArtists path="artists" />
         <TopTracks path="tracks" />
@@ -38,7 +37,6 @@ const Main = () => (
         <Recommendations path="recommendations/:playlistId" />
         <Track path="track/:trackId" />
 
-      </ScrollToTop>
     </Router>
   </MainDiv>
 );

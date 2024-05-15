@@ -12,10 +12,6 @@ const REDIRECT_URI = process.env.REDIRECT_URI
 const PORT = process.env.PORT;
 const state_key = 'spotify_auth_state';
 
-app.get('/', (req, res) => {
-    res.send("Hello world");
-});
-
 const generateRandomString = length => {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

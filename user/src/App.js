@@ -18,10 +18,15 @@ const App = () => {
     setAccessToken(token);
     console.log("access token", accessToken)
   }, []);
+
   return (
     <AppContainer>
       <GlobalStyle />
-      {accessToken ? <Main /> : <Login />}
+      {!accessToken ?(
+        <Login />
+      ) : (
+      <Main />
+    )}
     </AppContainer>
   );
 };
