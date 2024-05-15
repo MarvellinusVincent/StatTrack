@@ -24,13 +24,26 @@ const LeftSection = styled.div`
 `;
 
 const AvatarLink = styled.a`
-  width: 200px;
-  height: 200px;
-  img {
-    border-radius: 50%;
-  }
-  border: 3px solid ${colors.white};
+  display: inline-block;
   border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: ${spacing.md};
+  box-shadow: 0 10px 30px 1px ${colors.shadow};
+  transition: transform 0.3s ease-in-out;
+  img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    ${Media.tablet`
+      width: 200px;
+      height: 200px;
+    `};
+  }
+  &:hover,
+  &:focus {
+    transform: scale(1.1);
+  }
 `;
 
 const NoAvatar = styled.div`
@@ -111,7 +124,7 @@ const LogoutButton = styled.a`
   text-align: center;
   &:hover,
   &:focus {
-    background-color: ${colors.white};
+    background-color: ${colors.lightGreen};
     color: ${colors.actualBlack};
   }
 `;

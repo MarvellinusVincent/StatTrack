@@ -4,7 +4,7 @@ import TrackList from './TrackList';
 import ScrollToTop from './ScrollToTop';
 import RecommendedTrackItem from './RecommendedTrackItem';
 import Nav from './Nav';
-import TrackChart from './Chart';
+import AudioFeatureChart from './AudioFeatureChart';
 
 export {
     Loader,
@@ -13,5 +13,5 @@ export {
     ScrollToTop,
     RecommendedTrackItem,
     Nav,
-    TrackChart
+    AudioFeatureChart
 }

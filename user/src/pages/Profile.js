@@ -55,12 +55,18 @@ const TrackListContent = styled.div`
 
 const MoreButton = styled(Link)`
   ${Mixins.button};
+  background-color: transparent;
   text-align: center;
   white-space: nowrap;
   ${Media.phablet`
     padding: 11px 20px;
     font-sizes: ${fontSizes.xs};
   `};
+  &:hover,
+  &:focus {
+    background-color: ${colors.lightGreen};
+    color: ${colors.actualBlack};
+  }
 `;
 
 const Cover = styled.div`

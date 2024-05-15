@@ -13,7 +13,7 @@ const getTokenTimestamp = () => window.localStorage.getItem('spotify_token_times
 const getStoredAccessToken = () => window.localStorage.getItem('spotify_access_token');
 const getStoredRefreshToken = () => window.localStorage.getItem('spotify_refresh_token');
 
-const refreshToken = async() => {
+const refreshToken = async () => {
   try {
     const { data } = await axios.get(`/refresh_token?refresh_token=${getStoredRefreshToken()}`);
     const { access_token } = data;
@@ -29,17 +29,20 @@ const getAccessToken = () => {
   console.log("Getting access token...");
   const { error, access_token, refresh_token } = getParams();
   if (error) {
+    console.log("First if")
     refreshToken();
   }
 
   if (Date.now() - getTokenTimestamp() > EXPIRED_TIME) {
     console.warn('Access token has expired, refreshing...');
+    console.log("Second if")
     refreshToken();
   }
 
   const localAccessToken = getStoredAccessToken();
 
   if ((!localAccessToken || localAccessToken === 'undefined') && access_token) {
+    console.log("Third if");
     setAccessToken(access_token);
     setRefreshToken(refresh_token);
     return access_token;
@@ -51,8 +54,12 @@ const getAccessToken = () => {
 export const token = getAccessToken();
 
 axios.defaults.baseURL = 'https://api.spotify.com/v1';
-axios.defaults.headers['Authorization'] = `Bearer ${token}`;
-axios.defaults.headers['Content-Type'] = 'application/json';
+const headers = {
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/json',
+};
+
+axios.defaults.headers.common = headers;
 
 export const getCurrentUserProfile = () => axios.get('/me');
 
@@ -88,10 +95,10 @@ export const getFollowing = () =>
   axios.get('/me/following?type=artist');
 
 export const getRecentlyPlayed = () =>
-  axios.get('/me/player/recently-played?limit=50')
+  axios.get('/me/player/recently-played?limit=50');
 
 export const getPlaylists = () =>
-  axios.get('/me/playlists?limit=50')
+  axios.get('/me/playlists?limit=50');
 
 export const getArtist = artistId =>
   axios.get(`/artists/${artistId}`);
@@ -118,7 +125,7 @@ export const getRecommendationsForTracks = tracks => {
 export const addTrackToPlaylist = (playlistId, uris) => {
   const data = {
     position: 0
-  }
+  };
   axios.post(`/playlists/${playlistId}/tracks?uris=spotify:track:${uris}`, data);
 };
 
@@ -141,11 +148,32 @@ export const getTrackInfo = trackId =>
 
 export const playTrack = trackId => {
   const data = {
-    uris: [
+    "uris": [
       `spotify:track:${trackId}`
     ]
-  }
+  };
+  console.log('Token:', token);
   axios.put(`/me/player/play`, data);
+};
+
+export const pauseTrack = () => {
+  console.log('Token:', token);
+  axios.put(`/me/player/pause`);
+};
+
+export const removeTrackFromPlaylist = (playlistId, uris) => {
+  // Ensure uris is always an array
+  const trackUris = Array.isArray(uris) ? uris : [uris];
+
+  const data = {
+    tracks: trackUris.map(uri => ({
+      uri: `spotify:track:${uri}`
+    }))
+  };
+  console.log('Track IDs from spotify.js:', trackUris);
+  console.log('Playlist ID from spotify.js:', playlistId);
+  console.log('Data:', data);
+  axios.post(`/playlists/${playlistId}/tracks`, data);
 };
 
 export const logout = () => {

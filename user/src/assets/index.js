@@ -8,6 +8,7 @@ import GithubIconLogo from './icons/githubIcon.png';
 import PlusIcon from './icons/plusicon.png';
 import MinusIcon from './icons/minusIcon.png'
 import PlayIcon from './icons/playIcon.png';
+import PauseIcon from './icons/pauseIcon.png'
 
 export{
     UserAvatar,
@@ -19,5 +20,6 @@ export{
     GithubIconLogo,
     PlusIcon,
     MinusIcon,
-    PlayIcon
+    PlayIcon,
+    PauseIcon
 }
