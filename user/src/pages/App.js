@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { GlobalStyle } from './styles';
+import { GlobalStyle } from '../styles';
 
-import { token } from './utils/spotify';
+import { token } from '../utils/spotify';
 
-import Login from './pages/Login';
-import Main from './pages/Main';
+import Login from './Login';
+import Main from './Main';
 
 const AppContainer = styled.div`
   height: 100%;

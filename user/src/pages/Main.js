@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from '@reach/router';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Nav } from '../components';
 import Profile from './Profile';
 import RecentlyPlayed from './RecentlyPlayed';
@@ -14,6 +14,8 @@ import AllPlaylists from './AllPlaylists';
 
 import styled from 'styled-components';
 import { Theme, Media } from '../styles';
+import Home from '../Home';
+import Dash from '../Dash';
 
 const MainDiv = styled.div`
   padding-left: ${Theme.navWidth};
@@ -25,19 +27,23 @@ const MainDiv = styled.div`
 
 const Main = () => (
   <MainDiv>
-    <Nav />
-    <Router primary={false}>
-        <Profile path="/" />
-        <TopArtists path="artists" />
-        <TopTracks path="tracks" />
-        <RecentlyPlayed path="recent" />
-        <AllPlaylists path="playlists" />
-        <Artist path="artist/:artistId" />
-        <Playlist path="playlists/:playlistId" />
-        <Recommendations path="recommendations/:playlistId" />
-        <Track path="track/:trackId" />
-
-    </Router>
+    <BrowserRouter>
+      <Nav />
+      <Routes>
+        <Route path="/">
+          <Route index element={<Profile />} />
+          <Route path="dash" element={<Dash />} />
+          <Route path="artists" element={<TopArtists />} />
+          <Route path="tracks" element={<TopTracks />} />
+          <Route path="recent" element={<RecentlyPlayed />} />
+          <Route path="playlists/:playlistId" element={<Playlist />} />
+          <Route path="playlists" element={<AllPlaylists />} />
+          <Route path="artist/:artistId" element={<Artist />} />
+          <Route path="track/:trackId" element={<Track />} />
+          <Route path="recommendations/:playlistId" element={<Recommendations />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </MainDiv>
 );
 

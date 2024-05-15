@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from '@reach/router';
 import { GithubIconLogo, PlaylistIconLogo, RecentIconLogo, SpotifyLogo, TopArtistsLogo, TopTracksLogo, UserAvatar } from '../assets/index'
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
+import { Link, Outlet } from 'react-router-dom';
 const { colors } = Theme;
 
 const Container = styled.nav`
@@ -192,10 +192,6 @@ const MenuItem3 = styled.li`
   }
 `;
 
-const isActive = ({ isCurrent }) => (isCurrent ? { className: 'active' } : null);
-
-const NavLink = props => <Link getProps={isActive} {...props} />;
-
 const Nav = () => (
   <Container>
     <Logo>
@@ -205,34 +201,34 @@ const Nav = () => (
     </Logo>
     <Menu>
       <MenuItem3>
-        <NavLink to="/">
+        <Link to="/">
           <img src={UserAvatar} alt="UserAvatar" />
           <div>Profile</div>
-        </NavLink>
+        </Link>
       </MenuItem3>
       <MenuItem>
-        <NavLink to="artists">
+        <Link to="artists">
           <img src={TopArtistsLogo} alt="TopArtists" />
           <div>Top Artists</div>
-        </NavLink>
+        </Link>
       </MenuItem>
       <MenuItem>
-        <NavLink to="tracks">
+        <Link to="tracks">
           <img src={TopTracksLogo} alt="TopTracks" />
           <div>Top Songs</div>
-        </NavLink>
+        </Link>
       </MenuItem>
       <MenuItem>
-        <NavLink to="recent">
+        <Link to="recent">
           <img src={RecentIconLogo} alt="RecentIcon" />
           <div>Recent</div>
-        </NavLink>
+        </Link>
       </MenuItem>
       <MenuItem2>
-        <NavLink to="playlists">
+        <Link to="playlists">
           <img src={PlaylistIconLogo} alt="PlaylistIcon" />
           <div>Library</div>
-        </NavLink>
+        </Link>
       </MenuItem2>
     </Menu>
     <Github>
