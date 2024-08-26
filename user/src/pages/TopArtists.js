@@ -98,7 +98,7 @@ const ArtistArtwork = styled(Link)`
     transform: scale(1.1);
   }
   img {
-    border-radius: 50%;
+    /* border-radius: 50%; */
     object-fit: cover;
     width: 100%;
     height: 100%;

@@ -49,7 +49,7 @@ const PlaylistImage = styled.img`
   object-fit: cover;
   width: 250px;
   height: 250px;
-  border-radius: 2%;
+  /* border-radius: 2%; */
   margin-top: 10px;
 `;
 

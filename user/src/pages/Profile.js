@@ -113,7 +113,7 @@ const ArtistArtwork = styled(Link)`
     min-width: 50px;
     height: 60px;
     margin-right: ${spacing.base};
-    border-radius: 100%;
+    /* border-radius: 100%; */
   }
 `;
 
@@ -135,7 +135,7 @@ const TopContainer = styled.div`
   align-items: center;
   margin-bottom: 40px;
   img {
-    border-radius: 8px;
+    /* border-radius: 8px; */
   }
 `;
 
@@ -218,7 +218,7 @@ const TopTrackContainer = styled(Link)`
   }
 
   img {
-    border-radius: 8px;
+    /* border-radius: 8px; */
   }
 `;
 

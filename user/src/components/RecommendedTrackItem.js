@@ -41,12 +41,12 @@ const PlayButton = styled.a`
 
 const AlbumImage = styled.img`
   border-radius: 8px;
-  opacity: 1;
+  /* opacity: 1; */
 `;
 
 const PlayIconImg = styled.img`
   width: 40px;
-  opacity: 2;
+  /* opacity: 2; */
 `;
 
 const PauseIconImg = styled.img`

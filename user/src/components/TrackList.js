@@ -52,9 +52,9 @@ const TrackPicture = styled.div`
   width: 60px;
   min-width: 60px;
   margin-right: ${spacing.base};
-  img {
+  /* img {
     border-radius: 8px;
-  }
+  } */
 `;
 
 const TrackName = styled.span`

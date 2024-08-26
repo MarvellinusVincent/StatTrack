@@ -55,7 +55,7 @@ const PlaylistImage = styled.img`
   object-fit: cover;
   width: 200px;
   height: 200px;
-  border-radius: ${Theme.borderRadius} ${Theme.borderRadius} 0 0;
+  /* border-radius: ${Theme.borderRadius} ${Theme.borderRadius} 0 0; */
   margin-top: 10px;
 `;
 
