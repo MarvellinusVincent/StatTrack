@@ -22,7 +22,7 @@ const TrackPicture = styled.div`
   min-width: 60px;
   margin-right: ${spacing.base};
   img {
-    border-radius: 8px;
+    /* border-radius: 8px; */
   }
 `;
 const Cover = styled.div`

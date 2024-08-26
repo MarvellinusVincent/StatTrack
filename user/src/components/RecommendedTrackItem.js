@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Theme, Mixins, Media } from '../styles';
 import { PlusIcon, PlayIcon, PauseIcon } from '../assets';
-import { playTrack, pauseTrack } from '../utils/spotify';
 
 const { colors, fontSizes, spacing } = Theme;
 
@@ -40,7 +39,7 @@ const PlayButton = styled.a`
 `;
 
 const AlbumImage = styled.img`
-  border-radius: 8px;
+  /* border-radius: 8px; */
   /* opacity: 1; */
 `;
 
@@ -132,15 +131,6 @@ const PlusIconImg = styled.img`
 
 const RecommendedTrackItem = ({ track, onAddToPlaylist }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      pauseTrack();
-    } else {
-      playTrack(track.id);
-    }
-    setIsPlaying(!isPlaying);
-  };
   return (
     <li>
       <TrackContainer>
@@ -148,15 +138,6 @@ const RecommendedTrackItem = ({ track, onAddToPlaylist }) => {
           {track.album.images.length && (
             <>
               <AlbumImage src={track.album.images[2].url} alt="Album Artwork" />
-              <PlayButton>
-              <a onClick={togglePlayPause}>
-                {isPlaying ? (
-                  <PauseIconImg src={PauseIcon} alt="Pause Icon" />
-                ) : (
-                  <PlayIconImg src={PlayIcon} alt="Play Icon" />
-                )}
-              </a>
-              </PlayButton>
             </>
           )}
         </TrackPicture>

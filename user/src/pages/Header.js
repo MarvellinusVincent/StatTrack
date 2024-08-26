@@ -25,10 +25,10 @@ const LeftSection = styled.div`
 
 const AvatarLink = styled.a`
   display: inline-block;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   overflow: hidden;
   margin-bottom: ${spacing.md};
-  box-shadow: 0 10px 30px 1px ${colors.shadow};
+  /* box-shadow: 0 10px 30px 1px ${colors.shadow}; */
   transition: transform 0.3s ease-in-out;
   img {
     width: 200px;

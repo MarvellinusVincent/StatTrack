@@ -26,7 +26,7 @@ const Picture = styled.div`
   display: inline-block;
   overflow: hidden;
   margin-bottom: ${spacing.md};
-  box-shadow: 0 10px 30px -15px ${colors.shadow};
+  /* box-shadow: 0 10px 30px -15px ${colors.shadow}; */
   transition: transform 0.3s ease-in-out;
   img {
     width: 300px;

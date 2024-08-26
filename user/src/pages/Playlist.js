@@ -185,33 +185,30 @@ const Playlist = props => {
     if (!tracks || !audioFeatures) {
       return null;
     }
-
+  
     return tracks.map(({ track }) => {
-      const trackToAdd = track;
-
-      if (!track.audio_features) {
-        const audioFeaturesObj = audioFeatures.find(item => {
-          if (!item || !track) {
-            return null;
-          }
-          return item.id === track.id;
-        });
-
-        trackToAdd['audio_features'] = audioFeaturesObj;
+      if (!track) return null;
+      const audioFeaturesObj = audioFeatures.find(item => item && item.id === track.id); // Track check here
+      if (audioFeaturesObj) {
+        track.audio_features = audioFeaturesObj;
       }
-
-      return trackToAdd;
-    });
+    
+      return track;
+    }).filter(Boolean);
   }, [tracks, audioFeatures]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await getPlaylist(playlistId);
-      setPlaylist(data);
-      setTracksData(data.tracks);
-      
+      try {
+        const { data } = await getPlaylist(playlistId);
+        setPlaylist(data);
+        setTracksData(data.tracks);
+      } catch (error) {
+        console.error('Error fetching playlist data:', error);
+      }
     };
-    catchErrors(fetchData());
+    
+    fetchData();
   }, [playlistId]);
 
   useEffect(() => {
@@ -232,7 +229,10 @@ const Playlist = props => {
     catchErrors(fetchMoreData());
 
     const fetchAudioFeatures = async () => {
-      const ids = tracksData.items.map(({ track }) => track.id).join(',');
+      const ids = tracksData.items
+      .map(({ track }) => track ? track.id : null) // Avoid accessing id on null track
+      .filter(id => id !== null) // Remove null ids from the list
+      .join(',');
       const { data } = await getMultipleTrackAudioFeatures(ids);
       setAudioFeatures(audioFeatures => ([
         ...audioFeatures ? audioFeatures : [],

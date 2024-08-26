@@ -44,7 +44,7 @@ const PlaylistWrapper = styled.div`
   flex-direction: column;
   text-align: center;
   background-color: ${colors.actualBlack};
-  border-radius: 5%;
+  /* border-radius: 5%; */
   transition: background-color 0.3s ease;
   &:hover {
     background-color: ${colors.darkGrey};

@@ -146,8 +146,8 @@ const TopArtistContainer = styled(Link)`
   background-image: url(${props => props.imageurl});
   background-size: cover;
   background-position: center;
-  border-radius: 50%;
-  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5);
+  /* border-radius: 50%; */
+  /* box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5); */
   transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
   z-index: 1;
   position: relative;
@@ -186,7 +186,7 @@ const TopTrackContainer = styled(Link)`
   background-image: url(${props => props.imageurl});
   background-size: cover;
   background-position: center;
-  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5); */
   transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
   z-index: 1;
   position: relative;

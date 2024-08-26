@@ -22,16 +22,15 @@ const ArtistContainer = styled(MainStyle)`
 
 const PictureLink = styled.a`
   display: inline-block;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   overflow: hidden;
   margin-bottom: ${spacing.md};
-  box-shadow: 0 10px 30px -15px ${colors.shadow};
+  /* box-shadow: 0 10px 30px -15px ${colors.shadow}; */
   transition: transform 0.3s ease-in-out;
   img {
     width: 300px;
     height: 300px;
     object-fit: cover;
-    border-radius: 50%;
     ${Media.tablet`
       width: 200px;
       height: 200px;
