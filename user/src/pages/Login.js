@@ -51,7 +51,7 @@ const LoginButton = styled.a`
 const LOGIN_URI =
   process.env.NODE_ENV !== 'production'
     ? 'http://localhost:8888/login'
-    : 'https://statspot-fe32fb3a9656.herokuapp.com/login';
+    : 'https://stattrack-8b958c20bedf.herokuapp.com/login';
 
 
 const Login = () => (
