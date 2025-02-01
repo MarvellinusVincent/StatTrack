@@ -27,7 +27,7 @@ const refreshToken = async () => {
   try {
     if (!LOCALSTORAGE_VALUES.refreshToken ||
       LOCALSTORAGE_VALUES.refreshToken === 'undefined' ||
-      (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp) / 1000) < 1000
+      (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp)) / 1000 < 1000 < 1000
     ) {
       console.error('No refresh token available');
       logout();
@@ -226,5 +226,7 @@ export const logout = () => {
   for (const property in LOCALSTORAGE_KEYS) {
     window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
   }
-  window.location = window.location.origin;
+  window.sessionStorage.clear();
+  delete axios.defaults.headers.common["Authorization"];
+  window.location.href = window.location.origin;
 };
