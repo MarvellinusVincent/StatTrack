@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 
 import { ReadableYear } from '../utils';
 import { getTrackInfo } from '../utils/spotify';
-import AudioFeaturesChart from '../components/AudioFeatureChart';
 
 import styled from 'styled-components';
-import { Loader } from '../components';
 
 import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
 
@@ -26,7 +24,6 @@ const Picture = styled.div`
   display: inline-block;
   overflow: hidden;
   margin-bottom: ${spacing.md};
-  /* box-shadow: 0 10px 30px -15px ${colors.shadow}; */
   transition: transform 0.3s ease-in-out;
   img {
     width: 300px;
@@ -111,57 +108,16 @@ const Album = styled.h3`
   margin-bottom: 20px;
 `;
 
-const AudioFeatures = styled.div`
-  ${Mixins.flexCenter};
-  flex-direction: column;
-  gap: 100px;
-`;
-
-const Features = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  grid-gap: 20px;
-  width: 100%;
-  text-align: center;
-`;
-
-const Feature = styled.div`
-  padding: 15px 10px;
-`;
-
-const FeatureText = styled.h4`
-  color: ${colors.lightestGrey};
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 5px;
-  &:hover {
-    color: ${colors.green};
-    + p {
-      color: ${colors.green};
-    }
-  }
-`;
-
-const FeatureLabel = styled.p`
-  color: ${colors.lightestGrey};
-  font-size: ${fontSizes.xs};
-  margin-bottom: 0;
-`;
-
 const Track = () => {
   const { trackId } = useParams();
   const [track, setTrack] = useState(null);
-  const [audioAnalysis, setAudioAnalysis] = useState(null);
-  const [audioFeatures, setAudioFeatures] = useState(null);
 
   useEffect(() => {
-    console.log('Track ID in trakcitem.js before sending:', trackId);
     const fetchData = async () => {
       try {
         const data = await getTrackInfo(trackId);
+        console.log(data); // Check if the track data is received
         setTrack(data.track);
-        setAudioAnalysis(data.audioAnalysis);
-        setAudioFeatures(data.audioFeatures);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -174,15 +130,15 @@ const Track = () => {
       {track ? (
         <MainStyle>
           <TrackContainer>
-          <AlbumLink href={track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-            <Picture>
-              <img src={track.album.images[0].url} alt="Album Picture" />
-            </Picture>
-          </AlbumLink>
+            <AlbumLink href={track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">
+              <Picture>
+                <img src={track.album.images[0].url} alt="Album Picture" />
+              </Picture>
+            </AlbumLink>
             <TrackInfo>
-            <Title>
-              <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.name}</a>
-            </Title>
+              <Title>
+                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.name}</a>
+              </Title>
               <ArtistName>
                 {track.artists &&
                   track.artists.map(({ name, uri }, i) => (
@@ -193,9 +149,9 @@ const Track = () => {
                   ))}
               </ArtistName>
               <Album>
-                  {track.album.name}
-                  {' '}
-                  &middot; {ReadableYear(track.album.release_date)}
+                {track.album.name}
+                {' '}
+                &middot; {ReadableYear(track.album.release_date)}
               </Album>
               <PlayTrackButton
                 href={track.external_urls.spotify}
@@ -205,58 +161,9 @@ const Track = () => {
               </PlayTrackButton>
             </TrackInfo>
           </TrackContainer>
-
-          {audioFeatures && (
-            <AudioFeatures>
-              <Features>
-                <Feature>
-                  <FeatureText>{audioFeatures.tempo}</FeatureText>
-                  <FeatureLabel>Tempo</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.loudness}</FeatureText>
-                  <FeatureLabel>Loudness</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.acousticness}</FeatureText>
-                  <FeatureLabel>Acousticness</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.danceability}</FeatureText>
-                  <FeatureLabel>Danceability</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.energy}</FeatureText>
-                  <FeatureLabel>Energy</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.liveness}</FeatureText>
-                  <FeatureLabel>Liveness</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.speechiness}</FeatureText>
-                  <FeatureLabel>Speechiness</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.instrumentalness}</FeatureText>
-                  <FeatureLabel>Instrumentalness</FeatureLabel>
-                </Feature>
-                <Feature>
-                  <FeatureText>{audioFeatures.valence}</FeatureText>
-                  <FeatureLabel>Valence</FeatureLabel>
-                </Feature>
-              </Features>
-              {audioFeatures && (
-                <AudioFeaturesChart
-                  audioFeatures={audioFeatures}
-                  track={track}
-                />
-              )}
-            </AudioFeatures>
-          )}
         </MainStyle>
       ) : (
-        <Loader />
+        <div>Loading...</div>
       )}
     </RealMain>
   );
@@ -267,4 +174,3 @@ Track.propTypes = {
 };
 
 export default Track;
-

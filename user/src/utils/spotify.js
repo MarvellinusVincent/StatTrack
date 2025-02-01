@@ -16,18 +16,16 @@ const LOCALSTORAGE_VALUES = {
 
 const expiredToken = () => {
   const { accessToken, timestamp, expireTime } = LOCALSTORAGE_VALUES;
-  if (!accessToken || !timestamp) {
-    return false;
-  }
+  if (!accessToken || !timestamp) return false;
   const millisecondsElapsed = Date.now() - Number(timestamp);
-  return (millisecondsElapsed / 1000) > Number(expireTime);
+  const secondsElapsed = millisecondsElapsed / 1000;
+  return secondsElapsed > Number(expireTime);
 };
+
 
 const refreshToken = async () => {
   try {
-    if (!LOCALSTORAGE_VALUES.refreshToken ||
-      LOCALSTORAGE_VALUES.refreshToken === 'undefined'
-    ) {
+    if (!LOCALSTORAGE_VALUES.refreshToken) {
       console.error('No refresh token available');
       logout();
       return;
@@ -35,15 +33,17 @@ const refreshToken = async () => {
 
     const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
 
-    window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
-    window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
-
-    window.location.reload();
+    if (data.access_token) {
+      window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
+      window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
+      window.location.reload();
+    }
   } catch (e) {
-    console.error(e);
+    console.error('Error refreshing token:', e);
     logout();
   }
 };
+
 
 const getAccessToken = () => {
   const queryString = window.location.search;
@@ -56,8 +56,8 @@ const getAccessToken = () => {
   const hasError = urlParams.get('error');
 
   if (hasError || expiredToken() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
-    logout();
-    return;
+    refreshToken();
+    return false;  // Prevent further code execution if the token is invalid
   }
 
   if (LOCALSTORAGE_VALUES.accessToken && LOCALSTORAGE_VALUES.accessToken !== 'undefined') {
@@ -75,6 +75,7 @@ const getAccessToken = () => {
   return false;
 };
 
+
 export const token = getAccessToken();
 
 if (token) {
@@ -86,6 +87,13 @@ if (token) {
 } else {
   console.error('Token is not available');
 }
+
+
+axios.defaults.baseURL = 'https://api.spotify.com/v1';
+const headers = {
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/json',
+};
 
 axios.defaults.headers.common = headers;
 
@@ -150,24 +158,6 @@ export const getPlaylist = playlistId => {
   return axios.get(`/playlists/${playlistId}`);
 };
 
-export const getMultipleTrackAudioFeatures = ids => {
-  console.log('getMultipleTrackAudioFeatures parameters:', ids);
-  return axios.get(`/audio-features?ids=${ids}`);
-};
-
-export const getTrackAudioFeatures = trackId => {
-  console.log('getTrackAudioFeatures parameters:', trackId);
-  return axios.get(`/audio-features/${trackId}`);
-};
-
-export const getRecommendationsForTracks = tracks => {
-  console.log('getRecommendationsForTracks parameters:', tracks);
-  const shuffledTracks = tracks.sort(() => 0.5 - Math.random());
-  const seed_tracks = getTrackIds(shuffledTracks.slice(0, 5));
-  const seed_artists = '';
-  const seed_genres = '';
-  return axios.get(`/recommendations?seed_artists=${seed_artists}&seed_genres=${seed_genres}&seed_tracks=${seed_tracks}`);
-};
 
 export const addTrackToPlaylist = (playlistId, uris) => {
   console.log('addTrackToPlaylist parameters:', playlistId, uris);
@@ -184,20 +174,13 @@ export const getTrack = trackId => {
 
 const getTrackIds = tracks => tracks.map(({ track }) => track.id).join(',');
 
-export const getTrackAudioAnalysis = trackId => {
-  console.log('getTrackAudioAnalysis parameters:', trackId);
-  return axios.get(`/audio-analysis/${trackId}`);
-};
-
 export const getTrackInfo = trackId => {
   console.log('getTrackInfo parameters:', trackId);
   return axios
-    .all([getTrack(trackId), getTrackAudioAnalysis(trackId), getTrackAudioFeatures(trackId)])
+    .all([getTrack(trackId)])
     .then(
-      axios.spread((track, audioAnalysis, audioFeatures) => ({
+      axios.spread((track) => ({
         track: track.data,
-        audioAnalysis: audioAnalysis.data,
-        audioFeatures: audioFeatures.data,
       })),
     );
 };
@@ -221,7 +204,5 @@ export const logout = () => {
   for (const property in LOCALSTORAGE_KEYS) {
     window.localStorage.removeItem(LOCALSTORAGE_KEYS[property]);
   }
-  window.sessionStorage.clear();
-  delete axios.defaults.headers.common["Authorization"];
-  window.location.href = `https://accounts.spotify.com/logout?continue=${encodeURIComponent(window.location.origin)}`;
+  window.location = window.location.origin;
 };

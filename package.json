@@ -6,7 +6,7 @@
   "engines": {
     "node": "21.2.0"
   },
-  "cacheDirectories" : [
+  "cacheDirectories": [
     "node_modules",
     "user/node_modules"
   ],
@@ -30,6 +30,7 @@
     "chart.js": "^4.4.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "query-string": "^9.1.1",
     "querystring": "^0.2.1",
     "react-chartjs-2": "^5.2.0",
     "react-router-dom": "^6.23.1",

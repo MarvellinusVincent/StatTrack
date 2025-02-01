@@ -6,7 +6,6 @@ import RecentlyPlayed from './RecentlyPlayed';
 import TopArtists from './TopArtists';
 import TopTracks from './TopSongs';
 import Playlist from './Playlist';
-import Recommendations from './Recommendations';
 import Track from './Track';
 import Artist from './Artist';
 import AllPlaylists from './AllPlaylists';
@@ -37,8 +36,7 @@ const Main = () => (
             <Route path="tracks" element={<TopTracks />} />
             <Route path="recent" element={<RecentlyPlayed />} />
             <Route path="artist/:artistId" element={<Artist />} />
-            <Route path="track/:trackId" element={<Track />} />
-            <Route path="recommendations/:playlistId" element={<Recommendations />} />
+            <Route path="tracks/:trackId" element={<Track />} />
           </Route>
         </Routes>
       </ScrollToTop>

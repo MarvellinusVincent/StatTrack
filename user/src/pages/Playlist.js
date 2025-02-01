@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-import { getPlaylist, getMultipleTrackAudioFeatures } from '../utils/spotify';
+import { getPlaylist } from '../utils/spotify';
 import { catchErrors } from '../utils';
 
 import { TrackList, Loader } from '../components';
@@ -156,10 +156,6 @@ const PlaylistHeaderLeft = styled.div`
   align-items: center;
 `;
 
-const PlaylistHeaderMiddle = styled.div`
-  display: flex;
-  align-items: center;
-`
 const PlaylistHeaderRight = styled.div`
   display: flex;
   align-items: center;
@@ -227,19 +223,6 @@ const Playlist = props => {
       ...tracksData.items
     ]));
     catchErrors(fetchMoreData());
-
-    const fetchAudioFeatures = async () => {
-      const ids = tracksData.items
-      .map(({ track }) => track ? track.id : null) // Avoid accessing id on null track
-      .filter(id => id !== null) // Remove null ids from the list
-      .join(',');
-      const { data } = await getMultipleTrackAudioFeatures(ids);
-      setAudioFeatures(audioFeatures => ([
-        ...audioFeatures ? audioFeatures : [],
-        ...data['audio_features']
-      ]));
-    };
-    catchErrors(fetchAudioFeatures());
   }, [tracksData]);
 
   useEffect(() => {
@@ -302,9 +285,6 @@ const Playlist = props => {
                   <Slash>/</Slash>
                   Playlist
                 </PlaylistHeaderLeft>
-                <PlaylistHeaderMiddle>
-                  <RecommendationButton to={`/recommendations/${playlist.id}`}>Get Recommendations</RecommendationButton>
-                </PlaylistHeaderMiddle>
                 <PlaylistHeaderRight>
                   <Dropdown onChange={handleSortChange} value={sortValue}>
                     <DropdownOption value="">Original</DropdownOption>
