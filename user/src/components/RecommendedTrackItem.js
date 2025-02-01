@@ -144,7 +144,7 @@ const RecommendedTrackItem = ({ track, onAddToPlaylist }) => {
         <TrackMiniContainer>
           <TrackLeft>
             {track.name && (
-              <TrackName as={Link} to={`/track/${track.id}`}>
+              <TrackName as={Link} to={`/tracks/${track.id}`}>
                 {track.name}
               </TrackName>
             )}

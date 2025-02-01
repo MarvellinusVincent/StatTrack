@@ -86,7 +86,7 @@ const TrackDuration = styled.span`
 const TrackItem = ({ track }) => {
   return (
     <li>
-    <TrackContainer to={`/track/${track.id}`}>
+    <TrackContainer to={`/tracks/${track.id}`}>
       <div>
         <TrackPicture>
           {track.album.images.length && <img src={track.album.images[2].url} alt="Album Artwork" />}

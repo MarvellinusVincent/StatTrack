@@ -82,7 +82,7 @@ const TrackList = ({ tracks }) => (
     {tracks && tracks.length ? (
       <main>
         {tracks.map((track, i) => (
-          <TrackContainer key={i} to={`/track/${track.id}`}>
+          <TrackContainer key={i} to={`/tracks/${track.id}`}>
             <div>
               <TrackPicture>
                 {track.album.images.length && <img src={track.album.images[2].url} alt="Album Artwork" />}

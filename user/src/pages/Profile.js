@@ -304,7 +304,7 @@ const Profile = () => {
                       {topTracks.items.slice(0, 3).map((track, i) => (
                         <TopTrackContainer
                           key={i}
-                          to={`/track/${track.id}`}
+                          to={`/tracks/${track.id}`}
                           imageurl={track.album.images.length ? track.album.images[0].url : ''}
                         >
                           <img src={track.album.images.length ? track.album.images[0].url : ''} alt="Track" />
