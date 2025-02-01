@@ -26,11 +26,11 @@ const expiredToken = () => {
 const refreshToken = async () => {
   try {
     if (!LOCALSTORAGE_VALUES.refreshToken ||
-      LOCALSTORAGE_VALUES.refreshToken === 'undefined' ||
-      (Date.now() - Number(LOCALSTORAGE_VALUES.timestamp)) / 1000 < 1000 < 1000
+      LOCALSTORAGE_VALUES.refreshToken === 'undefined'
     ) {
       console.error('No refresh token available');
       logout();
+      return;
     }
 
     const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
@@ -41,6 +41,7 @@ const refreshToken = async () => {
     window.location.reload();
   } catch (e) {
     console.error(e);
+    logout();
   }
 };
 
@@ -55,7 +56,8 @@ const getAccessToken = () => {
   const hasError = urlParams.get('error');
 
   if (hasError || expiredToken() || LOCALSTORAGE_VALUES.accessToken === 'undefined') {
-    refreshToken();
+    logout();
+    return;
   }
 
   if (LOCALSTORAGE_VALUES.accessToken && LOCALSTORAGE_VALUES.accessToken !== 'undefined') {
@@ -84,13 +86,6 @@ if (token) {
 } else {
   console.error('Token is not available');
 }
-
-
-axios.defaults.baseURL = 'https://api.spotify.com/v1';
-const headers = {
-  Authorization: `Bearer ${token}`,
-  'Content-Type': 'application/json',
-};
 
 axios.defaults.headers.common = headers;
 
@@ -171,7 +166,7 @@ export const getRecommendationsForTracks = tracks => {
   const seed_tracks = getTrackIds(shuffledTracks.slice(0, 5));
   const seed_artists = '';
   const seed_genres = '';
-  return axios.get(`/recommendations?seed_tracks=${seed_tracks}&seed_artists=${seed_artists}&seed_genres=${seed_genres}`);
+  return axios.get(`/recommendations?seed_artists=${seed_artists}&seed_genres=${seed_genres}&seed_tracks=${seed_tracks}`);
 };
 
 export const addTrackToPlaylist = (playlistId, uris) => {
@@ -228,5 +223,5 @@ export const logout = () => {
   }
   window.sessionStorage.clear();
   delete axios.defaults.headers.common["Authorization"];
-  window.location.href = window.location.origin;
+  window.location.href = `https://accounts.spotify.com/logout?continue=${encodeURIComponent(window.location.origin)}`;
 };
