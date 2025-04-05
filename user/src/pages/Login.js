@@ -51,7 +51,7 @@ const LoginButton = styled.a`
 const LOGIN_URI =
   process.env.NODE_ENV !== 'production'
     ? 'http://localhost:8888/login'
-    : 'https://stattrack-8b958c20bedf.herokuapp.com/login';
+    : 'https://spotifystattrack.vercel.app/login';
 
 
 const Login = () => (
