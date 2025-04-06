@@ -48,10 +48,7 @@ const LoginButton = styled.a`
   }
 `;
 
-const LOGIN_URI = 
-  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:8888/login'  // Local development
-    : '/login';
+const LOGIN_URI = 'https://spotifystattrack.vercel.app/login'
 
 
 const Login = () => (
