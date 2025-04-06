@@ -77,9 +77,17 @@ app.get('/callback', (req, res) => {
       });
 });
 
+// Update these paths to be consistent
+app.use(express.static(path.resolve(__dirname, './client/build')));
+
+// Add error handling to refresh_token endpoint
 app.get('/refresh_token', (req, res) => {
     const { refresh_token } = req.query;
-  
+    
+    if (!refresh_token) {
+        return res.status(400).json({ error: 'Refresh token missing' });
+    }
+
     axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
@@ -93,10 +101,11 @@ app.get('/refresh_token', (req, res) => {
       },
     })
       .then(response => {
-        res.send(response.data);
+        res.json(response.data);
       })
       .catch(error => {
-        res.send(error);
+        console.error('Refresh token error:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to refresh token' });
       });
 });
 
