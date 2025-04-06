@@ -66,6 +66,7 @@ const getFrontendUrl = () => NODE_ENV === 'production'
     authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.append('state', state);
     authUrl.searchParams.append('prompt', 'login');
+
     
     res.redirect(authUrl.toString());
   });
@@ -160,14 +161,6 @@ app.get('/refresh_token', apiLimiter, async (req, res) => {
     });
   }
 });
-
-// Production static files
-if (NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-  });
-}
 
 app.listen(PORT, () => {
   console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
