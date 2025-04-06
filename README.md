@@ -52,12 +52,20 @@ Before running the app locally, ensure the following are installed:
      FRONTEND_URI=http://localhost:3000
      ```
 
-5. **Start the Development Server**  
+5. **Start the Backend Server**  
    ```bash
+   cd backend
+   node server.js
+   ```
+
+6. **Start the Frontend**  
+   Open a new terminal window/tab and run:  
+   ```bash
+   cd frontend
    npm start
    ```
 
-6. **Open the App**  
+7. **Open the App**  
    Navigate to:  
    [http://localhost:3000](http://localhost:3000)
 
@@ -73,13 +81,13 @@ Before running the app locally, ensure the following are installed:
 
 ## 🚢 Deployment  
 
-To deploy Stat Spot, run the build command and follow deployment steps for your preferred platform (e.g., Vercel, Netlify, Firebase):  
+To deploy Stat Spot, run the build command in the frontend and follow deployment steps for your chosen platform (e.g., Vercel, Netlify, Firebase):  
 
 ```bash
 npm run build
 ```
 
-Upload the build folder or link the repo depending on your platform’s requirements.
+Make sure to configure the backend deployment as well, and set your environment variables accordingly for production.
 
 ---
 
