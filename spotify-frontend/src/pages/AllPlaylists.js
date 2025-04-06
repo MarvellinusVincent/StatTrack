@@ -44,7 +44,7 @@ const PlaylistWrapper = styled.div`
   flex-direction: column;
   text-align: center;
   background-color: ${colors.actualBlack};
-  /* border-radius: 5%; */
+  border-radius: 5%;
   transition: background-color 0.3s ease;
   &:hover {
     background-color: ${colors.darkGrey};
@@ -55,7 +55,7 @@ const PlaylistImage = styled.img`
   object-fit: cover;
   width: 200px;
   height: 200px;
-  /* border-radius: ${Theme.borderRadius} ${Theme.borderRadius} 0 0; */
+  border-radius: ${Theme.borderRadius} ${Theme.borderRadius} 0 0;
   margin-top: 10px;
 `;
 
