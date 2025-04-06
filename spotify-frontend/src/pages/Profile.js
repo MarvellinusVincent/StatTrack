@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
 import { catchErrors } from '../utils';
-import { getCurrentUserProfile, getTopArtists, getTopSongs } from '../utils/spotify';
+import { getCurrentUserProfile, getTopArtists, getTopTracks } from '../utils/spotify';
 import { Loader, TrackItem } from '../components';
 import Header from './Header';
 
@@ -236,7 +236,7 @@ const Profile = () => {
         const userTopArtists = await getTopArtists();
         setTopArtists(userTopArtists.data);
 
-        const userTopTracks = await getTopSongs();
+        const userTopTracks = await getTopTracks();
         setTopTracks(userTopTracks.data);
       } catch (error) {
         console.error('Error fetching data:', error);

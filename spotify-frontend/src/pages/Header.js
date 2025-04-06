@@ -151,6 +151,11 @@ const Header = () => {
   
       catchErrors(fetchData());
     }, []);
+
+    const handleLogout = (e) => {
+      e.preventDefault();
+      logout();
+    };
   
     const totalPlaylists = userPlaylists ? userPlaylists.total : 0;
   
@@ -195,7 +200,7 @@ const Header = () => {
                 </Stats>
             </MiddleSection>
             <RightSection>
-                <LogoutButton onClick={logout}>Logout</LogoutButton>
+              <LogoutButton href="#" onClick={handleLogout}>Logout</LogoutButton>
             </RightSection>
             </>
         )}

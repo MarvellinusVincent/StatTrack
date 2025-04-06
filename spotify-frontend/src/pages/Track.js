@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import { ReadableYear } from '../utils';
 import { getTrackInfo } from '../utils/spotify';
-
 import styled from 'styled-components';
-
-import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
-
+import { Theme, Media, MainStyle, RealMain } from '../styles';
 import { useParams } from 'react-router-dom';
 
 const { colors, fontSizes, spacing } = Theme;
@@ -111,59 +107,80 @@ const Album = styled.h3`
 const Track = () => {
   const { trackId } = useParams();
   const [track, setTrack] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getTrackInfo(trackId);
-        console.log(data); // Check if the track data is received
         setTrack(data.track);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } catch (err) {
+        console.error('Error fetching track:', err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
       }
     };
+    
     fetchData();
   }, [trackId]);
 
+  if (isLoading) {
+    return (
+      <RealMain>
+        <div>Loading track information...</div>
+      </RealMain>
+    );
+  }
+
+  if (error) {
+    return (
+      <RealMain>
+        <div>Error loading track: {error.message}</div>
+      </RealMain>
+    );
+  }
+
   return (
     <RealMain>
-      {track ? (
+      {track && (
         <MainStyle>
           <TrackContainer>
             <AlbumLink href={track.album.external_urls.spotify} target="_blank" rel="noopener noreferrer">
               <Picture>
-                <img src={track.album.images[0].url} alt="Album Picture" />
+                <img src={track.album.images[0]?.url} alt={`Album cover for ${track.album.name}`} />
               </Picture>
             </AlbumLink>
             <TrackInfo>
               <Title>
-                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">{track.name}</a>
+                <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
+                  {track.name}
+                </a>
               </Title>
               <ArtistName>
-                {track.artists &&
-                  track.artists.map(({ name, uri }, i) => (
-                    <React.Fragment key={i}>
-                      <a href={uri} target="_blank" rel="noopener noreferrer">{name}</a>
-                      {track.artists.length > 0 && i === track.artists.length - 1 ? '' : ','}&nbsp;
-                    </React.Fragment>
-                  ))}
+                {track.artists?.map(({ name, external_urls }, i) => (
+                  <React.Fragment key={external_urls.spotify}>
+                    <a href={external_urls.spotify} target="_blank" rel="noopener noreferrer">
+                      {name}
+                    </a>
+                    {i < track.artists.length - 1 ? ', ' : ''}
+                  </React.Fragment>
+                ))}
               </ArtistName>
               <Album>
-                {track.album.name}
-                {' '}
-                &middot; {ReadableYear(track.album.release_date)}
+                {track.album.name} · {ReadableYear(track.album.release_date)}
               </Album>
               <PlayTrackButton
                 href={track.external_urls.spotify}
                 target="_blank"
-                rel="noopener noreferrer">
+                rel="noopener noreferrer"
+              >
                 Play on Spotify
               </PlayTrackButton>
             </TrackInfo>
           </TrackContainer>
         </MainStyle>
-      ) : (
-        <div>Loading...</div>
       )}
     </RealMain>
   );

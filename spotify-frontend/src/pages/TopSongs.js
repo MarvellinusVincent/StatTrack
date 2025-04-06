@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { getTopSongsShort, getTopSongsMedium, getTopSongs } from '../utils/spotify';
+import { getTopTracksShort, getTopTracks, getTopTracksMedium } from '../utils/spotify';
 import { catchErrors } from '../utils';
 
 import { Loader, TrackItem } from '../components';
@@ -59,14 +59,14 @@ const TopTracks = () => {
   const [activeRange, setActiveRange] = useState('short');
 
   const apiCalls = {
-    long: getTopSongs(),
-    medium: getTopSongsMedium(),
-    short: getTopSongsShort(),
+    long: getTopTracks(),
+    medium: getTopTracksMedium(),
+    short: getTopTracksShort(),
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await getTopSongsShort();
+      const { data } = await getTopTracksShort();
       setTopTracks(data);
     };
     catchErrors(fetchData());

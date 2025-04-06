@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ import { catchErrors } from '../utils';
 import { TrackList, Loader } from '../components';
 
 import styled from 'styled-components';
-import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
+import { Theme, Media, MainStyle, RealMain } from '../styles';
 
 const { colors, fontSizes } = Theme;
 
@@ -53,24 +53,6 @@ const User = styled.p`
 const TotalTracks = styled.p`
   font-size: 12px;
   color: ${colors.lightGrey};
-`;
-
-const RecommendationButton = styled(Link)`
-  background-color: transparent;
-  color: ${colors.white};
-  border: 1px solid ${colors.white};
-  border-radius: 30px;
-  padding: 12px 30px;
-  font-size: ${fontSizes.xs};
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-align: center;
-  &:hover,
-  &:focus {
-    background-color: ${colors.lightGreen};
-    color: ${colors.actualBlack};
-  }
 `;
 
 const Bottom = styled.div`
@@ -167,7 +149,7 @@ const Playlist = props => {
   const [sortValue, setSortValue] = useState('');
   const [tracksData, setTracksData] = useState(null);
   const [tracks, setTracks] = useState(null);
-  const [audioFeatures, setAudioFeatures] = useState(null);
+  const [audioFeatures] = useState(null);
   const [sortedTracks, setSortedTracks] = useState(null);
   const sortOptions = ['acousticness', 'danceability', 'energy', 'duration_ms', 'instrumentalness', 'liveness', 'loudness', 'tempo', 'speechiness', 'valence'];
   const tracksForTracklist = useMemo(() => {

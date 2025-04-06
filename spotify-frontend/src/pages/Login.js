@@ -1,8 +1,6 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import { Theme, Mixins, MainStyle } from '../styles';
-
 import spotifyLogo from '../assets/logo/spotify.png';
 
 const { colors } = Theme;
@@ -20,10 +18,8 @@ const LogoContainer = styled.a`
   top: 0px;
   border: 3px solid ${colors.white};
   padding: 5px;
-  /* border-radius:50%; */
   transform: scale(0.6);
 `;
-
 
 const LogoImage = styled.img`
   width: 100%;
@@ -48,16 +44,18 @@ const LoginButton = styled.a`
   }
 `;
 
-const LOGIN_URI = 'https://spotifystattrack.vercel.app/login'
+const Login = () => {
+  // Use environment variable consistently with rest of app
+  const loginUrl = `${process.env.REACT_APP_API_BASE_URL}/login`;
 
-
-const Login = () => (
-  <Container>
-    <LogoContainer href="https://open.spotify.com">
-      <LogoImage src={spotifyLogo} alt="Spotify Logo"/>
-    </LogoContainer>
-    <LoginButton href={LOGIN_URI}>Log in to Spotify</LoginButton>
-  </Container>
-);
+  return (
+    <Container>
+      <LogoContainer href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">
+        <LogoImage src={spotifyLogo} alt="Spotify Logo"/>
+      </LogoContainer>
+      <LoginButton href={loginUrl}>Log in to Spotify</LoginButton>
+    </Container>
+  );
+};
 
 export default Login;
