@@ -32,13 +32,13 @@ spotifyApiClient.interceptors.request.use((config) => {
 spotifyApiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (!error.response) { // Network error (no internet, etc.)
+    if (!error.response) { 
       return Promise.reject(error); 
     }
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const newToken = await refreshAccessToken(); // Changed function name here
+      const newToken = await refreshAccessToken();
       if (newToken) {
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return spotifyApiClient(originalRequest);
@@ -49,16 +49,16 @@ spotifyApiClient.interceptors.response.use(
   }
 );
 
-// Refresh token function (renamed to avoid conflict)
+// Refresh token function
 export const refreshAccessToken = async () => {
   try {
-    const storedRefreshToken = localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken); // Changed variable name
+    const storedRefreshToken = localStorage.getItem(LOCALSTORAGE_KEYS.refreshToken);
     if (!storedRefreshToken) {
       throw new Error('No refresh token');
     }
 
     const { data } = await axios.get(`${API_BASE_URL}/refresh_token`, {
-      params: { refresh_token: storedRefreshToken }, // Changed variable name
+      params: { refresh_token: storedRefreshToken },
     });
 
     if (data.access_token) {
@@ -115,7 +115,7 @@ export const getAccessToken = () => {
   if (storedToken && storedTimestamp && storedExpireTime) {
     const isExpired = (Date.now() - Number(storedTimestamp)) / 1000 > 
       (Number(storedExpireTime) * 0.9);
-    return isExpired ? refreshAccessToken() : storedToken; // Changed function name here
+    return isExpired ? refreshAccessToken() : storedToken;
   }
 
   return null;

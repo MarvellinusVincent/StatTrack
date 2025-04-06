@@ -1,300 +1,308 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-
 import { getPlaylist } from '../utils/spotify';
 import { catchErrors } from '../utils';
-
 import { TrackList, Loader } from '../components';
-
 import styled from 'styled-components';
-import { Theme, Media, MainStyle, RealMain } from '../styles';
+import { Theme, Media, MainStyle, RealMain, Mixins } from '../styles';
+import { getAccessToken } from '../utils/spotify';
 
 const { colors, fontSizes } = Theme;
 
-const PlaylistContainer = styled.div`
-  ${Media.tablet`
-    display: block;
-  `};
-  margin-top: 40px;
+const PlaylistContainer = styled(RealMain)`
+  background: linear-gradient(to bottom, ${colors.darkGrey} 0%, ${colors.actualBlack} 100%);
+  min-height: 100vh;
 `;
 
-const TopSection = styled.div`
+const HeaderSection = styled.div`
   display: flex;
-  align-items: center;
-  padding-top: 38px;
-  padding-left: 38px;
-  padding-right: 38px;
-  padding-bottom: 62px;
-  background-color: ${colors.mediumGrey};
+  align-items: flex-end;
+  padding: 80px 60px;
+  background: linear-gradient(to bottom, ${colors.mediumGrey} 0%, rgba(40,40,40,0.8) 100%);
+  position: relative;
+  overflow: hidden;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, ${colors.lightGrey} 50%, transparent 100%);
+  }
+
+  ${Media.tablet`
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 60px 40px;
+  `};
 `;
 
-const Name = styled.h1`
-  font-size: 110px;
-  font-weight: 700;
-  margin: 20px 0 0;
-  ${Media.tablet`
-    font-size: 40px;
-  `};
-  ${Media.phablet`
-    font-size: 8vw;
-  `};
+const PlaylistImage = styled.div`
+  width: 250px;
+  height: 250px;
+  border-radius: 8px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  margin-right: 50px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
   &:hover {
-    color: ${colors.lightGreen};
+    transform: scale(1.03);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  ${Media.tablet`
+    width: 200px;
+    height: 200px;
+    margin-right: 0;
+    margin-bottom: 30px;
+  `};
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 `;
 
-const User = styled.p`
-  font-size: 12px;
+const PlaylistInfo = styled.div`
+  flex: 1;
+  z-index: 1;
+`;
+
+const PlaylistName = styled.h1`
+  font-size: 4.5rem;
+  font-weight: 900;
+  margin: 0 0 15px;
   color: ${colors.white};
-`;
-
-const TotalTracks = styled.p`
-  font-size: 12px;
-  color: ${colors.lightGrey};
-`;
-
-const Bottom = styled.div`
-  flex-grow: 1;
+  line-height: 1;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+  
   ${Media.tablet`
-    margin: 50px 0 0;
+    font-size: 3.5rem;
+  `};
+  
+  ${Media.phablet`
+    font-size: 2.5rem;
   `};
 `;
 
-const Description = styled.p`
-  font-size: ${fontSizes.sm};
+const PlaylistDescription = styled.div`
+  font-size: ${fontSizes.md};
   color: ${colors.lightGrey};
+  margin-bottom: 25px;
+  line-height: 1.5;
+  
   a {
     color: ${colors.white};
-    border-bottom: 1px solid transparent;
-    &:hover,
-    &:focus {
-      border-bottom: 1px solid ${colors.white};
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: ${colors.lightGreen};
+      text-decoration: none;
     }
   }
 `;
 
-const PlaylistImage = styled.img`
-  object-fit: cover;
-  width: 250px;
-  height: 250px;
-  border-radius: 2%;
-  margin-top: 10px;
+const PlaylistMeta = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: ${fontSizes.sm};
+  color: ${colors.lightGrey};
+  margin-top: 15px;
+  
+  span {
+    margin: 0 10px;
+  }
+  
+  a {
+    color: ${colors.white};
+    font-weight: 600;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: ${colors.lightGreen};
+      text-decoration: none;
+    }
+  }
 `;
 
-const HeaderRight = styled.div`
+const StatsContainer = styled.div`
+  display: flex;
+  margin-top: 25px;
+  gap: 30px;
+  
+  ${Media.phablet`
+    gap: 20px;
+  `};
+`;
+
+const StatItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-left: 30px;
 `;
 
-const UserContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  gap: 4px;
+const StatNumber = styled.div`
+  font-size: ${fontSizes.lg};
+  font-weight: 700;
+  color: ${colors.lightGreen};
+  margin-bottom: 5px;
 `;
 
-const ProfileText = styled.span`
+const StatLabel = styled.div`
+  font-size: ${fontSizes.xs};
   color: ${colors.lightGrey};
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
-const Slash = styled.span`
-  color: ${colors.lightGrey};
-  margin: 0px 10px;
+const ContentSection = styled(MainStyle)`
+  padding: 50px;
+  ${Media.tablet`
+    padding: 30px;
+  `};
 `;
 
-const Dropdown = styled.select`
-  background-color: transparent;
-  color: ${colors.white};
-  border: none;
-  appearance: none;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: bold;
-  text-transform: capitalize;
-  &:focus {
-    outline: none;
+const TracklistHeader = styled.div`
+  ${Mixins.flexBetween};
+  margin-bottom: 30px;
+  
+  h2 {
+    margin: 0;
+    font-size: ${fontSizes.xxl};
+    color: ${colors.white};
+    font-weight: 700;
   }
 `;
 
-const DropdownOption = styled.option`
-  background-color: ${colors.mediumGrey};
-`;
-
-const PlaylistHeader = styled.h1`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 25px;
-  margin-bottom: 50px;
-  margin-top: 60px;
-`;
-
-const PlaylistHeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const PlaylistHeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Playlist = props => {
+const Playlist = () => {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState(null);
-  const [sortValue, setSortValue] = useState('');
   const [tracksData, setTracksData] = useState(null);
   const [tracks, setTracks] = useState(null);
-  const [audioFeatures] = useState(null);
-  const [sortedTracks, setSortedTracks] = useState(null);
-  const sortOptions = ['acousticness', 'danceability', 'energy', 'duration_ms', 'instrumentalness', 'liveness', 'loudness', 'tempo', 'speechiness', 'valence'];
-  const tracksForTracklist = useMemo(() => {
-    if (!tracks) {
-      return;
-    }
-    return tracks.map(({ track }) => track);
-  }, [tracks]);
-
-  const tracksWithAudioFeatures = useMemo(() => {
-    if (!tracks || !audioFeatures) {
-      return null;
-    }
-  
-    return tracks.map(({ track }) => {
-      if (!track) return null;
-      const audioFeaturesObj = audioFeatures.find(item => item && item.id === track.id); // Track check here
-      if (audioFeaturesObj) {
-        track.audio_features = audioFeaturesObj;
-      }
-    
-      return track;
-    }).filter(Boolean);
-  }, [tracks, audioFeatures]);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const { data } = await getPlaylist(playlistId);
-        setPlaylist(data);
-        setTracksData(data.tracks);
-      } catch (error) {
-        console.error('Error fetching playlist data:', error);
-      }
+      const { data } = await getPlaylist(playlistId);
+      setPlaylist(data);
+      setTracksData(data.tracks);
     };
-    
-    fetchData();
+    catchErrors(fetchData());
   }, [playlistId]);
 
   useEffect(() => {
-    if (!tracksData) {
-      return;
-    }
-    const fetchMoreData = async () => {
+    if (!tracksData) return;
+
+    const fetchMoreTracks = async () => {
       if (tracksData.next) {
-        const { data } = await axios.get(tracksData.next);
-        setTracksData(data);
+        try {
+          const { data } = await axios.get(tracksData.next, {
+            headers: { Authorization: `Bearer ${getAccessToken()}` },
+          });
+          setTracksData(data);
+        } catch (error) {
+          if (error.response?.status === 401) {
+            setTracksData(prev => ({ ...prev, next: null }));
+          }
+        }
       }
     };
 
-    setTracks(tracks => ([
-      ...tracks ? tracks : [],
-      ...tracksData.items
-    ]));
-    catchErrors(fetchMoreData());
+    setTracks(prev => [
+      ...(prev || []),
+      ...tracksData.items.filter(item => item.track),
+    ]);
+
+    catchErrors(fetchMoreTracks());
   }, [tracksData]);
 
-  useEffect(() => {
-    if (sortValue && tracksWithAudioFeatures) {
-      const sorted = [...tracksWithAudioFeatures].sort((a, b) => {
-        const aFeatures = a['audio_features'];
-        const bFeatures = b['audio_features'];
-    
-        if (!aFeatures || !bFeatures) {
-          return false;
-        }
-    
-        return bFeatures[sortValue] - aFeatures[sortValue];
-      });
-      setSortedTracks(sorted);
-    } else {
-      setSortedTracks(tracksWithAudioFeatures);
-    }
-  }, [sortValue, tracksWithAudioFeatures]);
-
-  const handleSortChange = (e) => {
-    const selectedValue = e.target.value;
-    setSortValue(selectedValue);
-  };
+  const tracksForTracklist = useMemo(() => {
+    if (!tracks) return null;
+    return tracks.map(({ track }) => track).filter(Boolean);
+  }, [tracks]);
 
   return (
-    <React.Fragment>
+    <PlaylistContainer>
       {playlist ? (
-        <RealMain>
-          <TopSection>
-            <a href={playlist.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-              {playlist.images.length && (
-                <PlaylistImage src={playlist.images[0].url} alt="Album Art" />
+        <>
+          <HeaderSection>
+            <PlaylistImage as={playlist.external_urls.spotify ? 'a' : 'div'}
+              href={playlist.external_urls.spotify}
+              target="_blank"
+              rel="noopener noreferrer">
+              {playlist.images[0]?.url ? (
+                <img src={playlist.images[0].url} alt={playlist.name} />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: colors.darkestGrey,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: colors.lightGrey
+                }}>
+                  No Image
+                </div>
               )}
-            </a>
-
-            <HeaderRight>
-              <a href={playlist.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                <Name>{playlist.name}</Name>
-              </a>
-
-              {playlist.description && (
-                <Description dangerouslySetInnerHTML={{ __html: playlist.description }} />
-              )}
-
-              <UserContainer>
-                <User>By {playlist.owner.display_name} </User>
-                <p>•</p>
-                <TotalTracks> {playlist.tracks.total} Songs</TotalTracks>
-              </UserContainer>
-
+            </PlaylistImage>
+            
+            <PlaylistInfo>
+              <PlaylistName as={playlist.external_urls.spotify ? 'a' : 'div'}
+                href={playlist.external_urls.spotify}
+                target="_blank"
+                rel="noopener noreferrer">
+                {playlist.name}
+              </PlaylistName>
               
-            </HeaderRight>
-          </TopSection>
-          <MainStyle>
-            <PlaylistContainer>
-              <PlaylistHeader>
-                <PlaylistHeaderLeft>
-                  <ProfileText>Profile</ProfileText>
-                  <Slash>/</Slash>
-                  Playlist
-                </PlaylistHeaderLeft>
-                <PlaylistHeaderRight>
-                  <Dropdown onChange={handleSortChange} value={sortValue}>
-                    <DropdownOption value="">Original</DropdownOption>
-                    {sortOptions.map((option, index) => (
-                      <DropdownOption key={index} value={option}>
-                        {option}
-                      </DropdownOption>
-                    ))}
-                  </Dropdown>
-                </PlaylistHeaderRight>
-              </PlaylistHeader>
-              <Bottom>
-                <ul>
-                  
-                  {sortedTracks !== null ? (
-                    <TrackList tracks={sortedTracks} />
-                  ) : (
-                    <TrackList tracks={tracksForTracklist} />
-                  )}
-                </ul>
-              </Bottom>
-            </PlaylistContainer>
-          </MainStyle>
-        </RealMain>
+              {playlist.description && (
+                <PlaylistDescription 
+                  dangerouslySetInnerHTML={{ __html: playlist.description }} 
+                />
+              )}
+              
+              <StatsContainer>
+                <StatItem>
+                  <StatNumber>{playlist.tracks.total.toLocaleString()}</StatNumber>
+                  <StatLabel>Tracks</StatLabel>
+                </StatItem>
+                
+                <StatItem>
+                  <StatNumber>{playlist.followers?.total?.toLocaleString() || '0'}</StatNumber>
+                  <StatLabel>Followers</StatLabel>
+                </StatItem>
+              </StatsContainer>
+              
+              <PlaylistMeta>
+                <span>Created by</span>
+                <Link to={`/user/${playlist.owner.id}`}>{playlist.owner.display_name}</Link>
+              </PlaylistMeta>
+            </PlaylistInfo>
+          </HeaderSection>
+
+          <ContentSection>
+            <TracklistHeader>
+              <h2>Tracks</h2>
+            </TracklistHeader>
+
+            {tracksForTracklist ? (
+              <TrackList tracks={tracksForTracklist} />
+            ) : (
+              <Loader />
+            )}
+          </ContentSection>
+        </>
       ) : (
-        <Loader />
+        <Loader fullScreen />
       )}
-    </React.Fragment>
+    </PlaylistContainer>
   );
 };
 

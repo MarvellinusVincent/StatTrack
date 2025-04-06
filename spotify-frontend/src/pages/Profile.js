@@ -9,216 +9,198 @@ import Header from './Header';
 
 const { colors, fontSizes, spacing } = Theme;
 
+const ProfileContainer = styled.div`
+  background: linear-gradient(to bottom, ${colors.darkGrey} 0%, ${colors.actualBlack} 100%);
+  min-height: 100vh;
+`;
+
 const Preview = styled.section`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 70px;
+  grid-gap: 50px;
   width: 100%;
-  margin-top: 100px;
+  margin-top: 50px;
   ${Media.tablet`
-    display: block;
-    margin-top: 70px;
+    grid-template-columns: 1fr;
+    grid-gap: 30px;
+    margin-top: 30px;
   `};
 `;
 
 const Tracklist = styled.div`
+  background: ${colors.darkestGrey};
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  }
+
   ${Media.tablet`
     &:last-of-type {
-      margin-top: 50px;
+      margin-top: 30px;
     }
   `};
 `;
 
 const TracklistHeading = styled.div`
   ${Mixins.flexBetween};
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid ${colors.lightGrey};
+  
   h3 {
-    display: inline-block;
     margin: 0;
-    font-size: 28px;
-  }
-`;
-
-const TrackListContent = styled.div`
-  margin-bottom: 40px;
-  background-color: ${colors.darkestGrey};
-  padding-top: 30px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-bottom: 20px;
-  border-radius: 3%;
-`;
-
-const MoreButton = styled(Link)`
-  ${Mixins.button};
-  background-color: transparent;
-  text-align: center;
-  white-space: nowrap;
-  ${Media.phablet`
-    padding: 11px 20px;
-    font-sizes: ${fontSizes.xs};
-  `};
-  &:hover,
-  &:focus {
-    background-color: ${colors.lightGreen};
-    color: ${colors.actualBlack};
-  }
-`;
-
-const Cover = styled.div`
-  ${Mixins.flexCenter};
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: ${colors.white};
-  opacity: 0;
-  transition: ${Theme.transition};
-  svg {
-    width: 25px;
-  }
-`;
-
-const Artist = styled.li`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover,
-  &:focus {
-    ${Cover} {
-      opacity: 1;
-    }
-    background-color: #2a2a2a;
-  }
-`;
-
-const ArtistDetailContainer = styled.div`
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 8px;
-`;
-
-const ArtistArtwork = styled(Link)`
-  display: inline-block;
-  position: relative;
-  width: 60px;
-  min-width: 50px;
-  margin-right: ${spacing.base};
-  img {
-    width: 60px;
-    min-width: 50px;
-    height: 60px;
-    margin-right: ${spacing.base};
-    border-radius: 100%;
-  }
-`;
-
-const ArtistName = styled(Link)`
-  flex-grow: 1;
-  span {
-    border-bottom: 1px solid transparent;
-    &:hover,
-    &:focus {
-      border-bottom: 1px solid ${colors.white};
-    }
+    font-size: ${fontSizes.xxl};
+    color: ${colors.white};
+    font-weight: 700;
+    letter-spacing: -0.5px;
   }
 `;
 
 const TopContainer = styled.div`
   display: flex;
-  position: relative;
   justify-content: center;
   align-items: center;
-  margin-bottom: 40px;
-  img {
-    border-radius: 8px;
-  }
+  margin-bottom: 30px;
+  gap: 20px;
 `;
 
-const TopArtistContainer = styled(Link)`
+const TopItem = styled(Link)`
   display: flex;
-  width: 13rem;
-  height: 13rem;
+  width: 120px;
+  height: 120px;
   background-image: url(${props => props.imageurl});
   background-size: cover;
   background-position: center;
-  border-radius: 50%;
-  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
-  z-index: 1;
+  border-radius: ${props => props.type === 'artist' ? '50%' : '8px'};
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
-  margin-right: -2.5rem;
-  margin-left: -2.5rem;
-
-  &:hover,
-  &:focus {
-    &:nth-child(1) {
-      transform: scale(1.1) translateX(-9px) rotate(-4deg);
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    
+    &:before {
+      opacity: 1;
     }
-    &:nth-child(2) {
-      transform: scale(1.1);
+    
+    &:nth-child(1) {
+      transform: scale(1.05) translateX(-5px);
     }
     &:nth-child(3) {
-      transform: scale(1.1) translateX(9px) rotate(4deg);
+      transform: scale(1.05) translateX(5px);
     }
   }
 
-  ${Media.md`
-    width: 9rem;
-    height: 9rem;
-  `}
-
   &:nth-child(2) {
+    width: 140px;
+    height: 140px;
     z-index: 2;
-    width: 14rem;
-    height: 14rem;
+  }
+
+  ${Media.md`
+    width: 90px;
+    height: 90px;
+    
+    &:nth-child(2) {
+      width: 110px;
+      height: 110px;
+    }
+  `}
+`;
+
+const ArtistList = styled.ul`
+  margin-top: 20px;
+`;
+
+const ArtistItem = styled.li`
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid ${colors.darkGrey};
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
-const TopTrackContainer = styled(Link)`
-  display: inline-block;
-  width: 13rem;
-  height: 13rem;
-  background-image: url(${props => props.imageurl});
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
-  z-index: 1;
-  position: relative;
-  margin-right: -2.5rem;
-  margin-left: -2.5rem;
+const ArtistImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: ${spacing.base};
+  object-fit: cover;
+`;
 
-  &:hover,
-  &:focus {
-    &:nth-child(1) {
-      transform: scale(1.1) translateX(-9px) rotate(-4deg);
-    }
-    &:nth-child(2) {
-      transform: scale(1.1);
-    }
-    &:nth-child(3) {
-      transform: scale(1.1) translateX(9px) rotate(4deg);
-    }
+const ArtistName = styled(Link)`
+  font-size: ${fontSizes.base};
+  color: ${colors.white};
+  font-weight: 500;
+  flex-grow: 1;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: ${colors.lightGreen};
+    text-decoration: none;
   }
+`;
 
-  ${Media.md`
-    width: 9rem;
-    height: 9rem;
-  `}
-
-  &:nth-child(2) {
-    z-index: 2;
-    width: 14rem;
-    height: 14rem;
+const MoreButton = styled(Link)`
+  ${Mixins.button};
+  background-color: transparent;
+  border: 1px solid ${colors.lightGreen};
+  color: ${colors.lightGreen};
+  padding: 10px 25px;
+  font-size: ${fontSizes.sm};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: ${colors.lightGreen};
+    color: ${colors.actualBlack};
+    transform: translateY(-2px);
   }
+`;
 
-  img {
-    border-radius: 8px;
+const TrackListContainer = styled.div`
+  margin-top: 20px;
+  list-style-type: none;
+`;
+
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: ${colors.lightGrey};
+  text-align: center;
+  
+  svg {
+    font-size: 50px;
+    margin-bottom: 20px;
   }
 `;
 
@@ -247,7 +229,7 @@ const Profile = () => {
   }, []);
 
   return (
-    <React.Fragment>
+    <ProfileContainer>
       {profile ? (
         <RealMain>
           <Header />
@@ -258,80 +240,80 @@ const Profile = () => {
                   <h3>Top Artists</h3>
                   <MoreButton to="/artists">See More</MoreButton>
                 </TracklistHeading>
-                <TrackListContent>
-                  {topArtists ? (
+                
+                {topArtists ? (
+                  <>
                     <TopContainer>
                       {topArtists.items.slice(0, 3).map((artist, i) => (
-                        <TopArtistContainer
+                        <TopItem
                           key={i}
                           to={`/artist/${artist.id}`}
                           imageurl={artist.images.length ? artist.images[0].url : ''}
+                          type="artist"
                         />
                       ))}
                     </TopContainer>
-                  ) : (
-                    <Loader />
-                  )}
-                  {topArtists ? (
-                    <ul>
+                    
+                    <ArtistList>
                       {topArtists.items.slice(0, 10).map((artist, i) => (
-                        <ArtistDetailContainer key={i}>
-                          <Artist>
-                            <ArtistArtwork to={`/artist/${artist.id}`}>
-                              {artist.images.length && <img src={artist.images[2].url} alt="Artist" />}
-                            </ArtistArtwork>
-                            <ArtistName to={`/artist/${artist.id}`}>
-                              <span>{artist.name}</span>
-                            </ArtistName>
-                          </Artist>
-                        </ArtistDetailContainer>
+                        <ArtistItem key={i}>
+                          {artist.images.length && (
+                            <ArtistImage src={artist.images[2].url} alt={artist.name} />
+                          )}
+                          <ArtistName to={`/artist/${artist.id}`}>
+                            {artist.name}
+                          </ArtistName>
+                        </ArtistItem>
                       ))}
-                    </ul>
-                  ) : (
+                    </ArtistList>
+                  </>
+                ) : (
+                  <EmptyState>
                     <Loader />
-                  )}
-                </TrackListContent>
+                    <p>Loading your top artists...</p>
+                  </EmptyState>
+                )}
               </Tracklist>
 
               <Tracklist>
                 <TracklistHeading>
-                  <h3>Top Songs</h3>
+                  <h3>Top Tracks</h3>
                   <MoreButton to="/tracks">See More</MoreButton>
                 </TracklistHeading>
-                <TrackListContent>
-                  {topTracks ? (
+                
+                {topTracks ? (
+                  <>
                     <TopContainer>
                       {topTracks.items.slice(0, 3).map((track, i) => (
-                        <TopTrackContainer
+                        <TopItem
                           key={i}
                           to={`/tracks/${track.id}`}
                           imageurl={track.album.images.length ? track.album.images[0].url : ''}
-                        >
-                          <img src={track.album.images.length ? track.album.images[0].url : ''} alt="Track" />
-                        </TopTrackContainer>
+                          type="track"
+                        />
                       ))}
                     </TopContainer>
-                  ) : (
-                    <Loader />
-                  )}
-                  {topTracks ? (
-                    <ul>
+                    
+                    <TrackListContainer>
                       {topTracks.items.slice(0, 10).map((track, i) => (
                         <TrackItem track={track} key={i} />
                       ))}
-                    </ul>
-                  ) : (
+                    </TrackListContainer>
+                  </>
+                ) : (
+                  <EmptyState>
                     <Loader />
-                  )}
-                </TrackListContent>
+                    <p>Loading your top tracks...</p>
+                  </EmptyState>
+                )}
               </Tracklist>
             </Preview>
           </MainStyle>
         </RealMain>
       ) : (
-        <Loader />
+        <Loader fullScreen />
       )}
-    </React.Fragment>
+    </ProfileContainer>
   );
 };
 

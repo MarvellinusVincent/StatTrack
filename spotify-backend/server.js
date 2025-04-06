@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 // Rate limiting
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100
 });
 app.use('/api/', apiLimiter);
@@ -57,7 +57,7 @@ const getFrontendUrl = () => NODE_ENV === 'production'
       httpOnly: true,
       secure: NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 600000 // 10 minutes
+      maxAge: 600000
     });
     
     const authUrl = new URL('https://accounts.spotify.com/authorize');
@@ -113,7 +113,6 @@ async function exchangeCodeForTokens(code) {
       grant_type: 'authorization_code',
       code,
       redirect_uri: REDIRECT_URI
-      // Add PKCE: code_verifier: storedCodeVerifier
     }),
     headers: {
       'content-type': 'application/x-www-form-urlencoded',

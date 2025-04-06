@@ -1,57 +1,92 @@
 import React, { useState, useEffect } from 'react';
-
+import styled from 'styled-components';
+import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
 import { getTopTracksShort, getTopTracks, getTopTracksMedium } from '../utils/spotify';
 import { catchErrors } from '../utils';
-
 import { Loader, TrackItem } from '../components';
-import styled from 'styled-components';
-
 import Header from './Header';
-
-import { Theme, Mixins, Media, MainStyle, RealMain } from '../styles';
 
 const { colors, fontSizes } = Theme;
 
-const HeaderStyle = styled.header`
-  ${Mixins.flexBetween};
-  ${Media.tablet`
-    display: block;
-  `};
-  h2 {
-    margin: 0;
-  }
-  margin-top:50px;
+const TopTracksContainer = styled(RealMain)`
+  background: linear-gradient(to bottom, ${colors.darkGrey} 0%, ${colors.actualBlack} 100%);
+  min-height: 100vh;
 `;
 
-const Range = styled.div`
-  display: flex;
-  margin-right: -11px;
+const ContentHeader = styled.header`
+  ${Mixins.flexBetween};
+  align-items: flex-end;
+  margin: 50px 0 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid ${colors.lightGrey};
+  
   ${Media.tablet`
-    justify-content: space-around;
-    margin: 30px 0 0;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 40px 0 25px;
   `};
-  gap: 10px;
+`;
+
+const PageTitle = styled.h2`
+  font-size: ${fontSizes.xxl};
+  font-weight: 800;
+  margin: 0;
+  color: ${colors.white};
+  letter-spacing: -0.5px;
+  
+  ${Media.tablet`
+    margin-bottom: 25px;
+  `};
+`;
+
+const RangeControls = styled.div`
+  display: flex;
+  gap: 15px;
+  
+  ${Media.tablet`
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  `};
+  
+  ${Media.phablet`
+    flex-wrap: wrap;
+  `};
 `;
 
 const RangeButton = styled.button`
-  background-color: transparent;
-  color: ${colors.white};
+  background-color: ${props => props.$isActive ? colors.lightGreen : 'transparent'};
+  color: ${props => props.$isActive ? colors.actualBlack : colors.white};
+  border: 2px solid ${props => props.$isActive ? colors.lightGreen : colors.white};
   border-radius: 30px;
-  padding: 12px 30px;
+  padding: 12px 25px;
   font-size: ${fontSizes.xs};
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-align: center;
-  &:hover,
-  &:focus {
-    background-color: ${colors.lightGreen};
-    color: ${colors.actualBlack};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: ${props => !props.$isActive && colors.lightGreen};
+    color: ${props => !props.$isActive && colors.actualBlack};
+    transform: translateY(-2px);
   }
+  
+  ${Media.phablet`
+    flex: 1;
+    min-width: calc(50% - 5px);
+    padding: 10px 15px;
+  `};
 `;
 
-const TracksContainer = styled.ul`
-  margin-top: 30px;
+const TracksList = styled.div`
+  margin: 40px 0;
+  background-color: ${colors.darkestGrey};
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
 `;
 
 const TopTracks = () => {
@@ -81,32 +116,48 @@ const TopTracks = () => {
   const setRangeData = range => catchErrors(changeRange(range));
 
   return (
-    <RealMain>
-        <Header />
-        <MainStyle>
-        <HeaderStyle>
-            <h2>Top Songs</h2>
-            <Range>
-            <RangeButton isActive={activeRange === 'short'} onClick={() => setRangeData('short')}>
-                <span>Last 4 Weeks</span>
+    <TopTracksContainer>
+      <Header />
+      <MainStyle>
+        <ContentHeader>
+          <PageTitle>Top Tracks</PageTitle>
+          <RangeControls>
+            <RangeButton 
+              $isActive={activeRange === 'short'} 
+              onClick={() => setRangeData('short')}
+            >
+              Last 4 Weeks
             </RangeButton>
-            <RangeButton isActive={activeRange === 'medium'} onClick={() => setRangeData('medium')}>
-                <span>Last 6 Months</span>
+            <RangeButton 
+              $isActive={activeRange === 'medium'} 
+              onClick={() => setRangeData('medium')}
+            >
+              Last 6 Months
             </RangeButton>
-            <RangeButton isActive={activeRange === 'long'} onClick={() => setRangeData('long')}>
-                <span>All Time</span>
+            <RangeButton 
+              $isActive={activeRange === 'long'} 
+              onClick={() => setRangeData('long')}
+            >
+              All Time
             </RangeButton>
-            </Range>
-        </HeaderStyle>
-        <TracksContainer>
-            {topTracks ? (
-            topTracks.items.map((track, i) => <TrackItem track={track} key={i} />)
-            ) : (
+          </RangeControls>
+        </ContentHeader>
+
+        <TracksList>
+          {topTracks ? (
+            topTracks.items.map((track, i) => (
+              <TrackItem 
+                track={track} 
+                key={i} 
+                index={i + 1}
+              />
+            ))
+          ) : (
             <Loader />
-            )}
-        </TracksContainer>
-        </MainStyle>
-    </RealMain>
+          )}
+        </TracksList>
+      </MainStyle>
+    </TopTracksContainer>
   );
 };
 

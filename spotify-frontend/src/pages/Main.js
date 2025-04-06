@@ -30,7 +30,7 @@ const Main = () => (
         <Routes>
           <Route path="/">
             <Route index element={<Profile />} />
-            <Route path="playlists/:playlistId" element={<Playlist />} />
+            <Route path="playlist/:playlistId" element={<Playlist />} />
             <Route path="playlists" element={<AllPlaylists />} />
             <Route path="artists" element={<TopArtists />} />
             <Route path="tracks" element={<TopTracks />} />
