@@ -51,6 +51,7 @@ const getFrontendUrl = () => NODE_ENV === 'production'
   : 'http://localhost:3000';
 
   app.get('/login', (req, res) => {
+    console.log('Using redirect URI:', REDIRECT_URI);
     const state = generateRandomString(32);
     res.cookie(state_key, state, {
       httpOnly: true,
