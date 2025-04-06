@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 8888;
 const state_key = 'spotify_auth_state';
 
 app.use(express.static(path.resolve(__dirname, './user/build')));
+const isProduction = process.env.VERCEL_ENV === 'production';
 
 const generateRandomString = length => {
     let text = '';
@@ -41,10 +42,23 @@ app.get('/login', (req, res) => {
     }));
 });
 
-app.get('/callback', (req, res) => {
+app.get('/callback', async (req, res) => {
+  try {
     const code = req.query.code || null;
-  
-    axios({
+    const state = req.query.state || null;
+    const storedState = req.cookies ? req.cookies[state_key] : null;
+
+    // Validate state
+    if (!state || state !== storedState) {
+      res.redirect(`/#${query_string.stringify({ error: 'state_mismatch' })}`);
+      return;
+    }
+
+    // Clear state cookie
+    res.clearCookie(state_key);
+
+    // Request tokens from Spotify
+    const tokenResponse = await axios({
       method: 'post',
       url: 'https://accounts.spotify.com/api/token',
       data: query_string.stringify({
@@ -54,33 +68,43 @@ app.get('/callback', (req, res) => {
       }),
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${new Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
+        'Authorization': `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
       },
-    })
-      .then(response => {
-        if (response.status === 200) {
-            const { access_token, refresh_token, expires_in } = response.data;
-            const query_params = query_string.stringify({
-                access_token,
-                refresh_token,
-                expires_in
-            })
-            res.redirect(`${FRONTEND_URI}?${query_params}`)
-        } else {
-          res.redirect(`/${query_string.stringify({
-            error: 'invalid token'
-          })}`);
-        }
-      })
-      .catch(error => {
-        res.send(error);
+    });
+
+    if (tokenResponse.status === 200) {
+      const { access_token, refresh_token, expires_in } = tokenResponse.data;
+      
+      // Set query params for frontend
+      const queryParams = query_string.stringify({
+        access_token,
+        refresh_token,
+        expires_in
       });
+
+      // Determine redirect URL based on environment
+      const frontendUrl = process.env.VERCEL_ENV === 'production'
+        ? process.env.FRONTEND_URI
+        : 'http://localhost:3000';
+
+      res.redirect(`${frontendUrl}/?${queryParams}`);
+    } else {
+      throw new Error(`Spotify API returned status ${tokenResponse.status}`);
+    }
+  } catch (error) {
+    console.error('Callback error:', error);
+    
+    // Determine redirect URL based on environment
+    const frontendUrl = process.env.VERCEL_ENV === 'production'
+      ? process.env.FRONTEND_URI
+      : 'http://localhost:3000';
+    
+    res.redirect(`${frontendUrl}/#${query_string.stringify({ 
+      error: 'invalid_token' 
+    })}`);
+  }
 });
 
-// Update these paths to be consistent
-app.use(express.static(path.resolve(__dirname, './client/build')));
-
-// Add error handling to refresh_token endpoint
 app.get('/refresh_token', (req, res) => {
     const { refresh_token } = req.query;
     
@@ -115,4 +139,9 @@ app.listen(PORT, () => {
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+});
+
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
 });

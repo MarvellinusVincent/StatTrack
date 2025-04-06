@@ -22,8 +22,7 @@ const expiredToken = () => {
   return secondsElapsed > Number(expireTime);
 };
 
-
-const refreshToken = async () => {
+export const refreshToken = async () => {
   try {
     if (!LOCALSTORAGE_VALUES.refreshToken) {
       console.error('No refresh token available');
@@ -31,16 +30,45 @@ const refreshToken = async () => {
       return;
     }
 
-    const { data } = await axios.get(`/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`);
+    // Determine the base URL based on environment
+    const baseUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:8888' 
+      : '';
+
+    const { data } = await axios.get(
+      `${baseUrl}/refresh_token?refresh_token=${LOCALSTORAGE_VALUES.refreshToken}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
 
     if (data.access_token) {
       window.localStorage.setItem(LOCALSTORAGE_KEYS.accessToken, data.access_token);
-      window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now());
-      window.location.reload();
+      window.localStorage.setItem(LOCALSTORAGE_KEYS.timestamp, Date.now().toString());
+      
+      // Only reload if we got a new refresh token
+      if (data.refresh_token) {
+        window.localStorage.setItem(LOCALSTORAGE_KEYS.refreshToken, data.refresh_token);
+        window.location.reload();
+      }
+      return data.access_token;
     }
-  } catch (e) {
-    console.error('Error refreshing token:', e);
+    
+    throw new Error('No access token in response');
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    
+    // Specific handling for different error cases
+    if (error.response?.status === 400) {
+      console.error('Invalid refresh token - logging out');
+    } else if (error.response?.status === 401) {
+      console.error('Refresh token revoked - logging out');
+    }
+    
     logout();
+    return null;
   }
 };
 

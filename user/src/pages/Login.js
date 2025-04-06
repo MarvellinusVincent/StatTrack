@@ -49,7 +49,7 @@ const LoginButton = styled.a`
 `;
 
 const LOGIN_URI =
-  process.env.NODE_ENV !== 'production'
+  process.env.NODE_ENV !== 'localhost'
     ? 'http://localhost:8888/login'
     : 'https://spotifystattrack.vercel.app/login';
 

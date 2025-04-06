@@ -1,0 +1,32 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "index.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "user/build/**",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/login",
+        "dest": "/index.js"
+      },
+      {
+        "src": "/callback",
+        "dest": "/index.js"
+      },
+      {
+        "src": "/refresh_token",
+        "dest": "/index.js"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/user/build/index.html",
+        "continue": true
+      }
+    ]
+  }
