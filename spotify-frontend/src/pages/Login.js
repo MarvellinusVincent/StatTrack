@@ -18,6 +18,7 @@ const LogoContainer = styled.a`
   top: 0px;
   border: 3px solid ${colors.white};
   padding: 5px;
+  border-radius:50%;
   transform: scale(0.6);
 `;
 
